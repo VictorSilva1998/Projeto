@@ -20,27 +20,21 @@ while escolha != "0":
     if escolha == "1":
         joao = joao + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "2":
         adalberto = adalberto + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "3":
         vinicius = vinicius + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "4":
         daniel = daniel + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "5":
         nulo = nulo + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "6":
         branco = branco + 1
         print ("\nVoto Aceito!\n")
-        continue
     elif escolha == "0":
         total = joao + adalberto + vinicius + daniel + nulo + branco
         candidatos = [joao, adalberto, vinicius, daniel]
@@ -55,6 +49,5 @@ while escolha != "0":
         print ("Votos em Branco = %i" %branco)
         print ("Total de votos = %i" %total)
         print ("Ganhador = ", nomes [x])
-        break
     else:
         print ("\nOpção Inválida!\n")
