@@ -42,7 +42,14 @@ if nome_login == nome_gerente and senha_login == senha_gerente:
             cpf = str(input("CPF: "))
             agencia = str(input("Agência: "))
             conta = str(input("Número da Conta: "))
-            saldo = float (input("Saldo: "))
+
+            while True:
+                try:
+                    saldo = float (input("Saldo: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                    
             email = str(input("Email: "))
             nascimento = str(input("Data de Nascimento: "))
             tipo = str(input("Tipo de Conta: "))
@@ -76,7 +83,7 @@ if nome_login == nome_gerente and senha_login == senha_gerente:
                 print ("CPF: ", cpf_lista [indice])
                 print ("Agência: ", agencia_lista [indice])
                 print ("Conta: ", conta_lista [indice])
-                print ("Saldo: ", saldo_lista [indice])
+                print ("Saldo: %.2f" %saldo_lista [indice])
                 print ("E-mail: ",email_lista [indice])
                 print ("Data de Nascimento: ", nascimento_lista [indice])
                 print ("Tipo de Conta: ", tipo_lista [indice])
@@ -229,11 +236,17 @@ if nome_login == nome_gerente and senha_login == senha_gerente:
             if conta_deposito in conta_lista:
                 indice = conta_lista.index (conta_deposito)
 
-                deposito = float (input ("Digite o valor que deseja depositar: "))
+                while True:
+                    try:
+                        deposito = float (input ("Digite o valor que deseja depositar: "))
 
-                saldo_deposito = saldo_lista [indice] + deposito
+                        saldo_deposito = saldo_lista [indice] + deposito
 
-                saldo_lista [indice] = saldo_deposito
+                        saldo_lista [indice] = saldo_deposito
+                        break
+
+                    except ValueError:
+                        print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
             
             else:
                 print ("\nConta não encontrada!\n")
@@ -247,8 +260,14 @@ if nome_login == nome_gerente and senha_login == senha_gerente:
                 senha_saque = str (input ("Digite a senha: "))
 
                 if senha_saque == senha_lista [indice]:
+                    
+                    while True:
+                        try:
+                            saque = float (input ("Digite o valor que deseja sacar: "))
+                            break
 
-                    saque = float (input ("Digite o valor que deseja sacar: "))
+                        except ValueError:
+                            print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
 
                     if saque < saldo_lista [indice]:
 
