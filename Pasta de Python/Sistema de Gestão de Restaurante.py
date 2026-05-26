@@ -10,19 +10,19 @@ media_lista = []
 cardapio_lista = []
 
 while True:
-    print ("===== Menu =====")
+    print ("===== Menu =====\n")
     print ("1 - Cadastro Restaurantes")
     print ("2 - Exibir Relatório Completo")
     print ("3 - Buscar Restaurante")
     print ("4 - Mostrar Estatísticas Gerais")
     print ("5 - Atualizar Dados de Restaurante")
     print ("6 - Remover Restaurante")
-    print ("7- Sair")
+    print ("7- Sair\n")
     opcao = str (input ("Digte a opção desejada: "))
     
     if opcao == "1":
     
-            y = int (input ("Quantas restaurantes deseja informar: "))
+            y = int (input ("\nQuantas restaurantes deseja informar: "))
 
             for x in range (1, y + 1):
             
@@ -76,7 +76,6 @@ while True:
                             else:
                                 media_lista.append (media)
                                 break
-
                     except ValueError:
                         print ("\nEntrada Inválida! Utilize apenas números. Por favor!\n")
 
@@ -160,16 +159,25 @@ while True:
 
         try:
             faturamento_media = (sum (faturamento_lista)) / (len (faturamento_lista))
-            fat_acima_media = [num for num in faturamento_lista if num > faturamento_media]
-            nome_acima_media = faturamento_lista.index (fat_acima_media)
-            print ("Restaurantes que possuem faturamento acima da média geral: ", nome_lista [nome_acima_media])
+            nomes_selecionados = [nome_lista[i] for i, valor in enumerate(faturamento_lista) if valor > faturamento_media]
+            print ("Restaurantes que possuem faturamento acima da média geral: ", nomes_selecionados)
         except ValueError:
             print ("Nenhum restaurante cadastrado!")
             
-            try:
-                print ("Estado com maior faturamento total: ", nome_lista [])
-            except ValueError:
-                print ("Nenhum restaurante cadastrado!")
+        try:
+            soma_faturamento_estados = {}
+
+            for nomes, valor in zip(nome_lista, faturamento_lista):
+                if nomes in soma_faturamento_estados:
+                    soma_faturamento_estados[nomes] += valor
+                else:
+                    soma_faturamento_estados[nomes] = valor
+
+            nome_maior_soma = max(soma_faturamento_estados, key=soma_faturamento_estados.get)
+            maior_valor = soma_faturamento_estados[nome_maior_soma]
+            print ("Estado com maior faturamento total: ", nome_maior_soma,", com um total de", maior_valor,".")
+        except ValueError:
+            print ("Nenhum restaurante cadastrado!")
 
         print ("Cidade com mais clientes atendidos: ", nome_lista [super_faturamento])
         print ("Porcentagem de restaurantes  com nota superior a 8: ", nome_lista [super_faturamento])
