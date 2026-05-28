@@ -36,14 +36,14 @@ while True:
                         funcionarios = int (input ("Quantidade de funcionários do %i° Restaurante: " %x))
                         break
                     except ValueError:
-                        print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                        print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
 
                 while True:
                     try:
                         clientes = int (input ("Quantidade de clientes atendidos no mês do %i° Restaurante: " %x))
                         break
                     except ValueError:
-                        print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                        print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
                 
                 while True:
                     try:
@@ -57,14 +57,14 @@ while True:
                         entregues = int (input ("Quantidade de pedidos entregues do %i° Restaurante: " %x))
                         break
                     except ValueError:
-                        print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                        print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
                 
                 while True:
                     try:
                         cancelados = int (input ("Quantidade de pedidos cancelados do %i° Restaurante: " %x))
                         break
                     except ValueError:
-                        print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                        print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
 
                 while True:
                     try:
@@ -72,10 +72,12 @@ while True:
                             media = float (input ("Nota média dos clientes do %i° Restaurante: " %x))
 
                             if media < 0 or media > 10:
-                                    print ("\nA média deve ser um valor de 0 a 10!\n")
+                                print ("\nA média deve ser um valor de 0 a 10!\n")
+
                             else:
                                 media_lista.append (media)
                                 break
+
                     except ValueError:
                         print ("\nEntrada Inválida! Utilize apenas números. Por favor!\n")
 
@@ -84,7 +86,7 @@ while True:
                             cardapio = int (input ("Quantidade de pratos no cardápio do %i° Restaurante: " %x))
                             break
                         except ValueError:
-                            print ("\nEntrada Inválida! Utilize números decimais. Por favor!\n")
+                            print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
 
                     nome_lista.append (nome)
                     cidade_lista.append (cidade)
@@ -100,6 +102,8 @@ while True:
                     break
     
     elif opcao == "2":
+            
+        if len (nome_lista) > 0:
 
             print ("\n========== Relatório ==========\n")
 
@@ -111,60 +115,57 @@ while True:
             except ValueError:
                 print ("Nenhum restaurante cadastrado possui mais de 100 pratos!")
 
-                try:
-                    mais_de_9 = [num for num in media_lista if num > 9]
-                    media_alta = media_lista.index (mais_de_9)
-                    print ("Restaurantes que tiveram nota média acima de 9: ", nome_lista [media_alta])
-                except ValueError:
-                    print ("Nenhum restaurante cadastrado teve nota média acima de 9!")
+            try:
+                mais_de_9 = [num for num in media_lista if num > 9]
+                media_alta = media_lista.index (mais_de_9)
+                print ("Restaurantes que tiveram nota média acima de 9: ", nome_lista [media_alta])
+            except ValueError:
+                print ("Nenhum restaurante cadastrado teve nota média acima de 9!")
 
-                    try:
-                        atendidos_max = max (clientes_lista)
-                        atendidos_mais = clientes_lista.index (atendidos_max)
-                        print ("Restaurante com maior quantidade de clientes atendidos: ", nome_lista [atendidos_mais])
-                    except ValueError:
-                        print ("Nenhum restaurante cadastrado!")
+            atendidos_max = max (clientes_lista)
+            atendidos_mais = clientes_lista.index (atendidos_max)
+            print ("Restaurante com maior quantidade de clientes atendidos: ", nome_lista [atendidos_mais])
 
-                    try:  
-                        mais_de_100000 = [num for num in faturamento_lista if num > 100000]
-                        super_faturamento = faturamento_lista.index (mais_de_100000)
-                        print ("Restaurantes cujo faturamento ultrapassa R$ 100.000,00: ", nome_lista [super_faturamento])
-                    except ValueError:
-                        print ("Nenhum restaurante cadastrado possui faturamento ultrapassa de R$ 100.000,00!\n")
+            try:  
+                mais_de_100000 = [num for num in faturamento_lista if num > 100000]
+                super_faturamento = faturamento_lista.index (mais_de_100000)
+                print ("Restaurantes cujo faturamento ultrapassa R$ 100.000,00: ", nome_lista [super_faturamento])
+            except ValueError:
+                print ("Nenhum restaurante cadastrado possui faturamento ultrapassa de R$ 100.000,00!\n")
 
+        else:
+            print ("\nNenhum restaurante cadastrado!\n")
 
     elif opcao == "3":
-            nome_consulta = str (input ("\nDigite o nome do restaurante desejado: "))
+        nome_consulta = str (input ("\nDigite o nome do restaurante desejado: "))
 
-            if nome_consulta in nome_lista:
-                indice = nome_lista.index (nome_consulta)
+        if nome_consulta in nome_lista:
+            indice = nome_lista.index (nome_consulta)
 
-                print ("\nNome: ", nome_lista [indice])
-                print ("Cidade: ", cidade_lista [indice])
-                print ("Estado: ", estado_lista [indice])
-                print ("Funcionários: ", funcionarios_lista [indice])
-                print ("Clientes no mês: ", clientes_lista [indice])
-                print ("Faturamento: %.2f" %faturamento_lista [indice])
-                print ("Pedidos entregues: ", entregues_lista [indice])
-                print ("Pedidos cancelados: ", cancelados_lista [indice])
-                print ("Nota Média dos Clientes: %.2f" %media_lista [indice])
-                print ("Quantidade de pratos no cardápio: ", cardapio_lista [indice],"\n")
+            print ("\nNome: ", nome_lista [indice])
+            print ("Cidade: ", cidade_lista [indice])
+            print ("Estado: ", estado_lista [indice])
+            print ("Funcionários: ", funcionarios_lista [indice])
+            print ("Clientes no mês: ", clientes_lista [indice])
+            print ("Faturamento: %.2f" %faturamento_lista [indice])
+            print ("Pedidos entregues: ", entregues_lista [indice])
+            print ("Pedidos cancelados: ", cancelados_lista [indice])
+            print ("Nota Média dos Clientes: %.2f" %media_lista [indice])
+            print ("Quantidade de pratos no cardápio: ", cardapio_lista [indice],"\n")
 
-            else:
-                print ("\nNome não Encontrado!\n")
+        else:
+            print ("\nNome não Encontrado!\n")
 
     elif opcao == "4":
-        
-        print ("\n========== Estatísticas ==========\n")
 
-        try:
+        if len (nome_lista) > 0:
+        
+            print ("\n========== Estatísticas ==========\n")
+
             faturamento_media = (sum (faturamento_lista)) / (len (faturamento_lista))
             nomes_selecionados = [nome_lista[i] for i, valor in enumerate(faturamento_lista) if valor > faturamento_media]
             print ("Restaurantes que possuem faturamento acima da média geral: ", nomes_selecionados)
-        except ValueError:
-            print ("Nenhum restaurante cadastrado!")
-            
-        try:
+                
             soma_faturamento_estados = {}
 
             for nomes, valor in zip(nome_lista, faturamento_lista):
@@ -175,10 +176,104 @@ while True:
 
             nome_maior_soma = max(soma_faturamento_estados, key=soma_faturamento_estados.get)
             maior_valor = soma_faturamento_estados[nome_maior_soma]
-            print ("Estado com maior faturamento total: ", nome_maior_soma,", com um total de", maior_valor,".")
-        except ValueError:
-            print ("Nenhum restaurante cadastrado!")
+            print ("Estado com maior faturamento total: ", nome_maior_soma, ", com um total de ", maior_valor, ".")
 
-        print ("Cidade com mais clientes atendidos: ", nome_lista [super_faturamento])
-        print ("Porcentagem de restaurantes  com nota superior a 8: ", nome_lista [super_faturamento])
-        print ("Total geral de pedidos cancelados: %i" %sum (cancelados_lista))
+            cidade_mais_clientes = {}
+
+            for cidades, maior in zip(cidade_lista, clientes_lista):
+                if cidades in cidade_mais_clientes:
+                    cidade_mais_clientes[cidades] += maior
+                else:
+                    cidade_mais_clientes[cidades] = maior
+
+            cidade_maior_soma = max(cidade_mais_clientes, key=cidade_mais_clientes.get)
+            mais_clientes = cidade_mais_clientes[cidade_maior_soma]
+            print ("Cidade com mais clientes atendidos: ", cidade_maior_soma, "com um total de ", mais_clientes, ".")
+
+            maiores_que_8 = [n for n in media_lista if n > 8]
+            porcentagem = ( len (maiores_que_8) / len (media_lista)) * 100
+            print ("Porcentagem de restaurantes  com nota superior a 8: %.2f%." %porcentagem)
+            print ("Total geral de pedidos cancelados: %i" %sum (cancelados_lista))
+
+        else:
+            print ("\nNenhum restaurante cadastrado!\n")
+    
+    elif opcao == "5":
+
+        consulta = str (input ("\nDigite o nome do restaurante desejado: "))
+
+        if consulta in nome_lista:
+            posicao = nome_lista.index (consulta)
+            nome = str (input ("Novo nome do Restaurante: "))
+            cidade = str (input ("Nova cidade do Restaurante: "))
+            estado = str (input ("Novo estado do Restaurante: "))
+
+            while True:
+                try:
+                    funcionarios = int (input ("Nova quantidade de funcionários do Restaurante: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
+
+            while True:
+                try:
+                    clientes = int (input ("Nova quantidade de clientes atendidos no mês do Restaurante: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
+                
+            while True:
+                try:
+                    faturamento = float (input ("Novo faturamento Mensal do Restaurante: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize apenas números. Por favor!\n")
+                
+            while True:
+                try:
+                    entregues = int (input ("Nova quantidade de pedidos entregues do Restaurante: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
+                
+            while True:
+                try:
+                    cancelados = int (input ("Nova quantidade de pedidos cancelados do Restaurante: "))
+                    break
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
+
+            while True:
+                try:
+                    while True:
+                        media = float (input ("Nova nota média dos clientes do Restaurante: "))
+
+                        if media < 0 or media > 10:
+                            print ("\nA média deve ser um valor de 0 a 10!\n")
+                        
+                        else:
+                            media_lista [posicao] = media
+                        break
+                        
+                except ValueError:
+                    print ("\nEntrada Inválida! Utilize apenas números. Por favor!\n")
+
+                while True:
+                    try:
+                        cardapio = int (input ("Nova quantidade de pratos no cardápio do Restaurante: "))
+                        break
+                    except ValueError:
+                        print ("\nEntrada Inválida! Utilize números inteiros. Por favor!\n")
+
+                nome_lista [posicao] = nome
+                cidade_lista [posicao] = cidade
+                estado_lista [posicao] = estado
+                funcionarios_lista [posicao] = funcionarios
+                clientes_lista [posicao] = clientes
+                faturamento_lista [posicao] = faturamento
+                entregues_lista [posicao] = entregues
+                cancelados_lista [posicao] = cancelados
+                cardapio_lista [posicao] = cardapio
+
+                print ("\nRestaurante Atualizado!\n")
+                break
