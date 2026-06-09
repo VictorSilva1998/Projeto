@@ -277,3 +277,31 @@ while True:
 
                 print ("\nRestaurante Atualizado!\n")
                 break
+
+    elif opcao == "6":
+        consulta = str (input ("\nDigite o nome do restaurante desejado: "))
+
+        if consulta in nome_lista:
+            posicao = nome_lista.index (consulta)
+            nome_lista.pop (posicao)
+            cidade_lista.pop (posicao)
+            estado_lista.pop (posicao)
+            funcionarios_lista.pop (posicao)
+            clientes_lista.pop (posicao)
+            faturamento_lista.pop (posicao)
+            entregues_lista.pop (posicao)
+            cancelados_lista.pop (posicao)
+            media_lista.pop (posicao)
+            cardapio_lista.pop (posicao)
+
+            print ("\nDados excluidos com sucesso!\n")
+        
+        else:
+            print ("\nRestaurante não encontrado!\n")
+    
+    elif opcao == "7":
+        print ("\nSaindo...")
+        break
+
+    else:
+        print ("\nOpção Inválida!\n")
