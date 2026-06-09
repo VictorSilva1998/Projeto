@@ -11,3 +11,15 @@ def hello (nome):
 
 a = input ("Digite seu nome: ")
 hello (a)
+
+def hello (nome):
+    print ("Olá", nome)
+hello ("Ederson")
+hello ("João")
+hello ("Maria")
+hello ("Pedro")
+hello ("José")
+
+def hello (nome,idade):
+    print ("Olá", nome,"\nSua idade é:", idade)
+hello ("Ederson", 25)
