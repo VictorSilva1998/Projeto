@@ -3,11 +3,11 @@ def horario (horas, minutos):
         resultado = horas - 12
         print ("\nHoras:", resultado,":", minutos,"P.M\n")
 
-    elif horas >= 0 and horas <= 12:
+    elif horas >= 0 and horas < 12:
         print ("\nHoras:", horas,":", minutos,"A.M\n")
     
     else:
-        print ("\nHoras:", horas,":", minutos,"A.M\n")
+        print ("\nHoras:", horas,":", minutos,"P.M\n")
 
 while True:
     print ("1 - Converter Horas")
