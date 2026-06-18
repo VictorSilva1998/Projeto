@@ -16,5 +16,5 @@ def embaralhar(texto):
     return ''.join(resultado)
 
 teste = str (input ("Digite uma string para ser embaralhada: "))
-texto_modificado = embaralhar(teste)
-print("\nString Embaralhada: ", texto_modificado)
+string_modificado = embaralhar(teste)
+print("\nString Embaralhada: ", string_modificado)
