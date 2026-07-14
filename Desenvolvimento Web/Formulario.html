@@ -47,16 +47,29 @@
         <form>
             <fieldset id="email">
                 <legend>E-mail</legend>
-                <p>email<input type="email" name="email" id="email" size="20" maxlength="30" placeholder="exemplo@exemplo.com"></p>
+                <p>E-mail: <input type="email" name="email" id="email" size="20" maxlength="30" placeholder="exemplo@exemplo.com"></p>
             </fieldset>
         </form>
 
         <form>
             <fieldset id="senha">
                 <legend>Senha</legend>
-                <p>senha<input type="password" name="Senha" id="campos" size="20" maxlength="10" placeholder="abc@123"></p>
+                <p>Senha: <input type="password" name="Senha" id="campos" size="20" maxlength="10" placeholder="abc@123"></p>
             </fieldset>
         </form>
+
+        <form>
+            <fieldset id="data">
+                <legend>Data de Nascimento</legend>
+                <p>Data de Nascimento: <input type="date" name="date" id="campos=d" size="20" maxlength="10" placeholder="00-00-0000"></p>
+            </fieldset>
+        </form>
+
+        <label for="hora">Horário de Atendimento: </label>
+        <input type="time" id="hora" name="hora">
+
+        <label for="hora">Data e Hora: </label>
+        <input type="datetime-local" id="datahora" name="datahora">
 
 </body>
 </html>
