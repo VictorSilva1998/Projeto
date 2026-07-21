@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Formulário de Cadastro</h1>
+
+    <form action="exercicio_ederson.php">
+        <fieldset>
+            <legend>Dados Pessoais</legend>
+            <label for="name">Nome:</label><br>
+            <input type="text" id="name" name="name" size="15" required><br><br>
+            <label for="cpf">CPF:</label><br>
+            <input type="text" id="cpf" name="cpf" maxlength="11" size="15" required><br>
+            <p>Data de Nascimento:<br><input type="date" name="date" id="campos=d" size="20" maxlength="10" placeholder="00-00-0000"></p>
+            <label for="sex">Sexo:</label><br>
+            <input type="radio" id="male" name="sex" value="Masculino" required>
+            <label for="html">Masculino</label>
+            <input type="radio" id="female" name="sex" value="Feminino" required>
+            <label for="css">Feminino</label><br><br>
+
+            <label for="estado_civil">Estado Civil:</label>
+            <br><select id="estado_civil" name="estado_civil" required>
+                <option value="solteiro">Solteiro(a)</option>
+                <option value="casado">Casado(a)</option>
+                <option value="divorciado">Divorciado(a)</option>
+                <option value="viuvo">Viúvo(a)</option>
+            </select><br>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Endereço</legend>
+            <label for="street">Rua:</label><br>
+            <input type="text" id="street" name="street" size="15" required><br><br>
+            <label for="number">Número:</label><br>
+            <input type="text" id="number" name="number" size="15" required><br><br>
+            <label for="neighborhood">Bairro:</label><br>
+            <input type="text" id="neighborhood" name="neighborhood" size="15" required><br><br>
+            <label for="city">Cidade:</label><br>
+            <input type="text" id="city" name="city" size="15" required><br><br>
+
+            <label for="estado">Estado:</label>
+            <br><select id="estado" name="estado" required>
+                <option value="acre">AC</option>
+                <option value="alagoas">AL</option>
+                <option value="amapá">AP</option>
+                <option value="amazonas">AM</option>
+                <option value="bahia">BA</option>
+                <option value="ceará">CE</option>
+                <option value="distrito_federal">DF</option>
+                <option value="espirito_santo">ES</option>
+                <option value="goias">GO</option>
+                <option value="maranhao">MA</option>
+                <option value="mato_grosso">MT</option>
+                <option value="mato_grosso_do_sul">MS</option>
+                <option value="minas_gerais">MG</option>
+                <option value="para">PA</option>
+                <option value="paraiba">PB</option>
+                <option value="parana">PR</option>
+                <option value="pernambuco">PE</option>
+                <option value="piaui">PI</option>
+                <option value="rio_de_janeiro">RJ</option>
+                <option value="rio_grande_do_norte">RN</option>
+                <option value="rio_grande_do_sul">RS</option>
+                <option value="rondonia">RO</option>
+                <option value="roraima">RR</option>
+                <option value="santa_catarina">SC</option>
+                <option value="sao_paulo">SP</option>
+                <option value="sergipe">SE</option>
+                <option value="tocantins">TO</option>
+            </select><br>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Dados Financeiros</legend>
+            <label for="monthly_income">Renda Mensal:</label><br>
+            <input type="text" id="monthly_income" name="monthly_income" size="15" required><br><br>
+            <label for="bank">Banco:</label><br>
+            <input type="text" id="bank" name="bank" size="15" required><br><br>
+            <label for="agency">Agência:</label><br>
+            <input type="text" id="agency" name="agency" size="15" required><br><br>
+            <label for="account">Conta:</label><br>
+            <input type="text" id="account" name="account" size="15" required><br>
+            <p>Possui Cartão?</p>
+            <input type="checkbox" id="card" name="has_card" value="Cartão">
+            <label for="card">Sim</label>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Dados Comerciais</legend>
+            <label for="enterprise">Empresa:</label><br>
+            <input type="text" id="enterprise" name="enterprise" size="15" required><br><br>
+            <label for="role">Cargo:</label><br>
+            <input type="text" id="role" name="role" size="15" required><br><br>
+            <label for="salary">Salário:</label><br>
+            <input type="text" id="salary" name="salary" size="15" required><br><br>
+            <label for="company_time">Tempo de Empresa:</label><br>
+            <input type="text" id="company_time" name="company_time" size="15" required><br><br>
+
+            <label for="type_of_contract">Estado Civil:</label>
+            <br><select id="type_of_contract" name="type_of_contract" required>
+                <option value="clt">CLT</option>
+                <option value="estagio">Estágio</option>
+                <option value="autonomo">Autônomo</option>
+                <option value="prestacao_de_serviços">Prestação de Serviços</option>
+            </select><br>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Cadastro Veículo</legend>
+            <label for="brand">Marca:</label><br>
+            <input type="text" id="brand" name="brand" size="15" required><br><br>
+            <label for="model">Modelo:</label><br>
+            <input type="text" id="model" name="model" size="15" required><br><br>
+            <label for="year">Ano:</label><br>
+            <input type="text" id="year" name="year" size="15" required><br><br>
+            <label for="plate">Placa:</label><br>
+            <input type="text" id="plate" name="plate" size="15" required><br><br>
+
+            <label for="fuel">Combustível:</label>
+            <br><select id="fuel" name="fuel" required>
+                <option value="gasolina">Gasolina</option>
+                <option value="etanol">Etanol (Álcool)</option>
+                <option value="diesel">Diesel</option>
+                <option value="gnv">GNV (Gás Natural Veicular)</option>
+            </select><br>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Cadastro Imóvel</legend>
+
+            <label for="type">Tipo:</label>
+            <br><select id="type" name="type" required>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="kitnet">Kitnet</option>
+                <option value="studio">Studio</option>
+            </select><br><br>
+
+            <label for="address">Endereço:</label><br>
+            <input type="text" id="address" name="address" size="15" required><br><br>
+            <label for="area">Área (m²):</label><br>
+            <input type="text" id="area" name="area" size="15" required><br><br>
+            <label for="price">Valor:</label><br>
+            <input type="text" id="price" name="price" size="15" required><br><br>
+            <label for="financing">Financiado?</label><br>
+            <input type="radio" id="yes" name="financing" value="Sim" required>
+            <label for="sim">Sim</label>
+            <input type="radio" id="no" name="financing" value="Não" required>
+            <label for="no">Não</label><br><br>
+            
+        </fieldset>
+
+        <fieldset>
+            <legend>Dados Cônjuge</legend>
+            <label for="sname">Nome:</label><br>
+            <input type="text" id="sname" name="sname" size="15" required><br><br>
+            <label for="scpf">CPF:</label><br>
+            <input type="scpf" id="scpf" name="scpf" maxlength="11" size="15" required><br><br>
+            <label for="idade">Idade:</label><br>
+            <input type="number" id="idade" name="idade" min="0" max="120"><br><br>
+            <label for="profession">Profissão:</label><br>
+            <input type="text" id="profession" name="profession" size="15" required><br><br>
+            <label for="working">Trabalha?</label><br>
+            <input type="radio" id="syes" name="working" value="sSim" required>
+            <label for="ssim">Sim</label>
+            <input type="radio" id="sno" name="working" value="sNão" required>
+            <label for="sno">Não</label><br>
+        </fieldset>
+
+        <fieldset>
+            <legend>Dados Filhos</legend>
+            <label for="quantidade">Quantidade:</label><br>
+            <input type="number" id="quantidade" name="quantidade" min="0" max="50"><br><br>
+            <label for="names">Nome do Filho:</label><br>
+            <input type="text" id="names" name="names" size="15" required><br><br>
+            <label for="idades">Idade:</label><br>
+            <input type="number" id="idades" name="idades" min="0" max="120"><br>
+            <p>Estuda?</p>
+            <input type="checkbox" id="study" name="study" value="Estuda">
+            <label for="study">Sim</label><br><br>
+            <label for="school">Escola:</label><br>
+            <input type="text" id="school" name="school" size="15" required><br>
+        </fieldset>
+
+        <br><fieldset>
+            <legend>Formação Escolar</legend>
+
+            <label for="type">Escolaridade:</label>
+            <br><select id="type" name="type" required>
+                <option value="fundamental">Ensino Fundamental</option>
+                <option value="medio">Ensino Médio</option>
+                <option value="superior">Ensino Superior</option>
+                <option value="pos">Pós-graduação</option>
+            </select><br><br>
+
+            <label for="institution">Instituição:</label><br>
+            <input type="text" id="institution" name="institution" size="15" required><br><br>
+            <label for="course">Curso:</label><br>
+            <input type="text" id="course" name="course" size="15" required><br><br>
+            <label for="conclusion">Ano de Conclusão:</label><br>
+            <input type="text" id="conclusion" name="conclusion" size="15" required><br><br>
+            <label for="observacoes">Observações:</label><br>
+            <textarea
+                id="observacoes"
+                name="observacoes"
+                rows="5"
+                cols="40">
+            </textarea>
+            
+        </fieldset>
+
+        <br><input type="submit" value="Enviar">
+        <button type="reset">Limpar</button>
+    </form>
+    
+</body>
+</html>

@@ -47,29 +47,54 @@
         <form>
             <fieldset id="email">
                 <legend>E-mail</legend>
-                <p>E-mail: <input type="email" name="email" id="email" size="20" maxlength="30" placeholder="exemplo@exemplo.com"></p>
+                <p>E-mail:<input type="email" name="email" id="email" size="20" maxlength="30" placeholder="exemplo@exemplo.com"></p>
             </fieldset>
         </form>
 
         <form>
             <fieldset id="senha">
                 <legend>Senha</legend>
-                <p>Senha: <input type="password" name="Senha" id="campos" size="20" maxlength="10" placeholder="abc@123"></p>
+                <p>Senha:<input type="password" name="Senha" id="campos" size="20" maxlength="10" placeholder="abc@123"></p>
             </fieldset>
         </form>
 
         <form>
             <fieldset id="data">
                 <legend>Data de Nascimento</legend>
-                <p>Data de Nascimento: <input type="date" name="date" id="campos=d" size="20" maxlength="10" placeholder="00-00-0000"></p>
+                <p>Data de Nascimento:<input type="date" name="date" id="campos=d" size="20" maxlength="10" placeholder="00-00-0000"></p>
             </fieldset>
         </form>
 
-        <label for="hora">Horário de Atendimento: </label>
-        <input type="time" id="hora" name="hora">
+        <label for="hora">Horário de Atendimento:</label>
+        <input type="time" id="hora" name="hora"><br>
 
-        <label for="hora">Data e Hora: </label>
-        <input type="datetime-local" id="datahora" name="datahora">
+        <label for="hora">Data e Hora:</label>
+        <input type="datetime-local" id="datahora" name="datahora"><br>
+
+        <label for="idade">Idade:</label>
+        <input type="number" id="idade" name="idade" min="0" max="120"><br>
+
+        <label for="cor">Escolha uma cor:</label>
+        <input type="color" id="cor" name="cor"><br>
+
+        <label for="arquivo">Carregar arquivo:</label>
+        <input type="file" id="arquivo" name="arquivo"><br>
+
+        <label for="pais">País</label>
+        <select id="pais" name="pais">
+            <option value="brasil">Brasil</option>
+            <option value="eua">Estados Unidos</option>
+            <option value="japao">Japão</option>
+        </select><br>
+
+        <label for="mensagem">Mensagem:</label><br>
+        <textarea
+            id="mensagem"
+            name="mensagem"
+            rows="5"
+            cols="40"
+            placeholder="Digite sua mensagem aqui...">
+        </textarea>
 
 </body>
 </html>
