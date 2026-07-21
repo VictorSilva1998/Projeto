@@ -1,0 +1,12 @@
+body {background-color: powderblue;}
+h1 {color: blue;}
+h1.center {text-align: center; color: orange;}
+p {color: red;}
+
+#Amarelo{color: yellow;}
+
+#paragrafo1 {color: gray;}
+#paragrafo2 {color: blue;}
+
+.Vermelho {color: red;}
+.Azul {color: blue;}
