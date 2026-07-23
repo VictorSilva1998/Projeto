@@ -1,0 +1,18 @@
+body {
+    width: 1920px; 
+    height: 1080px; 
+    background: linear-gradient(to top, #25B4CF, #D3E7EB);}
+
+p.um {color: #59F01F; text-align: justify; margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;}
+p.dois {color: #FF0000; text-align: justify;}
+p.tres {color: #008053; text-align: justify;}
+p.quatro {color: #40E0C8; text-align: justify;}
+p.cinco {color: #808072; text-align: justify;}
+
+div.um {height: 510px; width: 230px; box-sizing: border-box; background-color: #2A31F0; display: inline-block; border: 1; border-color: black; border-style: solid; border-radius: 10%;}
+div.dois {height: 600px; width: 210px; box-sizing: border-box; background-color: #ADD8E6; display: inline-block; border: 1; border-color: black; border-style: solid;}
+div.tres {height: 600px; width: 210px; box-sizing: border-box; background-color: #5F9EA0; display: inline-block; border: 1; border-color: black; border-style: solid;}
+div.quatro {height: 600px; width: 210px; box-sizing: border-box; background-color: #FF7F50; display: inline-block; border: 1; border-color: black; border-style: solid;}
+div.cinco {height: 600px; width: 210px; box-sizing: border-box; background-color: #760A0B; display: inline-block; border: 1; border-color: black; border-style: solid;}
+
+img {border-top-left-radius: 10%; border-top-right-radius: 10%;}

@@ -1,5 +1,5 @@
 body {background-color: powderblue;}
-h1 {color: blue;}
+h1 {color: blue; height: 300px; width: 300px; background-color: aquamarine; display: inline-block; border: 1; border-color: black; border-style: solid;}
 h1.center {text-align: center; color: orange;}
 p {color: red;}
 p.centro {text-align: center; font-size: 24px; font-weight: bold; font-style: italic; line-height: 24px; font: Arial; border-color: purple; border-style: double; border-width: 10px; border-bottom-right-radius: 20px; border-radius: 25px; box-shadow: 10px 10px 8px #888888;}
@@ -11,3 +11,9 @@ p.centro {text-align: center; font-size: 24px; font-weight: bold; font-style: it
 
 .Vermelho {color: red;}
 .Azul {color: blue;}
+
+span {color: red;}
+
+footer {margin-left: 800px; margin-top: 700px; opacity: 0.5;}
+
+.nav1 {width: 100px; height: 100px; box-sizing: content-box; border: 1; border-color: black; border-style: solid;}
