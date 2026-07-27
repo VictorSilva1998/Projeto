@@ -57,6 +57,13 @@ class FormularioLogin (QFrame):
         self.botao_entrar.setCursor (Qt.PointingHandCursor)
         self.botao_entrar.clicked.connect (self._emitir_login)
 
+        link_esqueci = QPushButton ("Esqueci minha senha")
+        link_esqueci.setObjectName ("LinkEsqueci")
+        link_esqueci.setCursor (Qt.PointingHandCursor)
+
+        self.campo_usuario.returnPressed.connect (self._emitir_login)
+        self.campo_senha.returnPressed.connect (self._emitir_login)
+
     def _alterar_senha (self, marcado: bool) -> None:
         self.campo_senha.setEchoMode (QLineEdit.Normal if marcado else QLineEdit.Password)
 
