@@ -1,5 +1,5 @@
 class Cores:
-    FUNDO = "#2618e7"
+    FUNDO = "#8e8acc"
     CARTAO = "#dee3f8"
     TEXTO = "#000000"
     TEXTO_SECUNDARIO = "#7e7e7e"

@@ -64,6 +64,11 @@ class FormularioLogin (QFrame):
         self.campo_usuario.returnPressed.connect (self._emitir_login)
         self.campo_senha.returnPressed.connect (self._emitir_login)
 
+        layout.addStretch ()
+        layout.addWidget (titulo)
+        layout.addWidget (subtitulo)
+        layout.addWidget (link_esqueci)
+
     def _alterar_senha (self, marcado: bool) -> None:
         self.campo_senha.setEchoMode (QLineEdit.Normal if marcado else QLineEdit.Password)
 
