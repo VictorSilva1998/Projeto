@@ -11,6 +11,14 @@ class Cores:
 
 ESTILO = f"""
 QWidget#Janela{{
-background-color: {Cores.FUNDO}
+    background-color: {Cores.FUNDO}
+}}
+QFrame#Formulario {{
+    background-color: {Cores.CARTAO}
+}}
+QLabel#Titulo {{
+    font-size: 22px;
+    font-weight: bold;
+    colaor {Cores.TEXTO}
 }}
 """
