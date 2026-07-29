@@ -50,7 +50,7 @@ class FormularioLogin (QFrame):
         self.campo_senha.setEchoMode (QLineEdit.Password)
 
         self.mostra_senha = QCheckBox ("Mostrar Senha")
-        self.mostra_senha.toggle.connect (self._alterar_senha)
+        self.mostra_senha.toggled.connect (self._alterar_senha)
 
         self.botao_entrar = QPushButton ("Entrar")
         self.botao_entrar.setObjectName ("Botão Entrar")
@@ -69,3 +69,40 @@ class FormularioLogin (QFrame):
 
     def _emitir_login (self) -> None:
         self.login_solicitado.emit (self.campo_usuario.text (), self.campo_senha ())
+
+    def limpa_senha (self) -> None:
+        self.campo_senha.clear ()
+        self.campo_senha.setFocus ()
+
+class TelaLogin (QWidget):
+    #autenticado = Signal (Usuario)
+
+    def __init__(self):
+        super().__init__()
+        self.setObjectName ("Janela")
+        self.setWindowTitle ("Login")
+        self.setFixedSize (LARGURA, ALTURA)
+        
+        self.painel_imagem = PainelImagem ()
+        self.formulario = FormularioLogin ()
+
+        layout = QHBoxLayout (self)
+        layout.setContentsMargins (0, 0, 0, 0)
+        layout.setSpacing (0)
+        layout.addWidget (self.painel_imagem, 1)
+        layout.addWidget (self.formulario, 1)
+
+    #     self.formulario.login_solicitado.connect (self._tentar_login)
+    #     self.formulario.senha_esquecida.connect (self._Mostrar_ajuda_senha)
+
+    # def _tentar_login (self, login: str, senha: str) -> None:
+    #     try:
+    #         usuario = self.autenticator.autenticar (login, senha)
+
+    #     except ErroAutenticacao as erro:
+    #         QMessageBox.warning (self, "Fallha no Login", str (erro))
+    #         self.formulario.limpa_senha ()
+    #         return
+        
+    #     QMessageBox.information (self, "Sucesso", f"Bem vindo, {usuario.nome_exibicao}!")
+    #     self.autenticado.emit (usuario)
