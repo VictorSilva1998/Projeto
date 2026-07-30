@@ -1,0 +1,23 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    background-color: aqua;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.filho {
+    height: 80%;
+    width: 15%;
+    border: 1;
+    border-style: solid;
+    border-color: black;
+}
