@@ -2,8 +2,8 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QCheckBox, QFrame, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QVBoxLayout, QWidget, QPushButton
 from app import IMAGEM_LOGIN
-# AUTENTICATOR
-# USUÁRIO
+from app.autenticador import Autenticador, ErroAutenticacao
+from app.usuario import Usuario
 
 LARGURA = 760
 ALTURA = 420
@@ -53,7 +53,7 @@ class FormularioLogin (QFrame):
         self.mostra_senha.toggled.connect (self._alterar_senha)
 
         self.botao_entrar = QPushButton ("Entrar")
-        self.botao_entrar.setObjectName ("Botão Entrar")
+        self.botao_entrar.setObjectName ("BotãoEntrar")
         self.botao_entrar.setCursor (Qt.PointingHandCursor)
         self.botao_entrar.clicked.connect (self._emitir_login)
 
@@ -80,17 +80,19 @@ class FormularioLogin (QFrame):
         self.campo_senha.setEchoMode (QLineEdit.Normal if marcado else QLineEdit.Password)
 
     def _emitir_login (self) -> None:
-        self.login_solicitado.emit (self.campo_usuario.text (), self.campo_senha ())
+        self.login_solicitado.emit (self.campo_usuario.text (), self.campo_senha.text ())
 
     def limpa_senha (self) -> None:
         self.campo_senha.clear ()
         self.campo_senha.setFocus ()
 
 class TelaLogin (QWidget):
-    #autenticado = Signal (Usuario)
+    autenticado = Signal (Usuario)
 
-    def __init__(self):
+    def __init__(self, autenticador: Autenticador | None = None):
         super().__init__()
+        self.autenticador = autenticador or Autenticador ()
+
         self.setObjectName ("Janela")
         self.setWindowTitle ("Login")
         self.setFixedSize (LARGURA, ALTURA)
@@ -104,17 +106,20 @@ class TelaLogin (QWidget):
         layout.addWidget (self.painel_imagem, 1)
         layout.addWidget (self.formulario, 1)
 
-    #     self.formulario.login_solicitado.connect (self._tentar_login)
-    #     self.formulario.senha_esquecida.connect (self._Mostrar_ajuda_senha)
+        self.formulario.login_solicitado.connect (self._tentar_login)
+        self.formulario.senha_esquecida.connect (self._Mostrar_ajuda_senha)
 
-    # def _tentar_login (self, login: str, senha: str) -> None:
-    #     try:
-    #         usuario = self.autenticator.autenticar (login, senha)
+    def _tentar_login (self, login: str, senha: str) -> None:
+        try:
+            usuario = self.autenticador.autenticar (login, senha)
 
-    #     except ErroAutenticacao as erro:
-    #         QMessageBox.warning (self, "Fallha no Login", str (erro))
-    #         self.formulario.limpa_senha ()
-    #         return
+        except ErroAutenticacao as erro:
+            QMessageBox.warning (self, "Fallha no Login", str (erro))
+            self.formulario.limpa_senha ()
+            return
         
-    #     QMessageBox.information (self, "Sucesso", f"Bem vindo, {usuario.nome_exibicao}!")
-    #     self.autenticado.emit (usuario)
+        QMessageBox.information (self, "Sucesso", f"Bem vindo, {usuario.nome_exibicao}!")
+        self.autenticado.emit (usuario)
+
+    def _Mostrar_ajuda_senha (self) -> None:
+        QMessageBox.information (self, "Recuperar Senha", "Entre em contato com Administrador")

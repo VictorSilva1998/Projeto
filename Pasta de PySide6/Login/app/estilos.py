@@ -3,7 +3,7 @@ class Cores:
     CARTAO = "#dee3f8"
     TEXTO = "#000000"
     TEXTO_SECUNDARIO = "#7e7e7e"
-    PLACEHOLDER = "#94aaff"
+    PLACEHOLDER = "#4264f0"
     BORDA = "#5d6796"
     PRIMARIA = "#2448d4"
     PRIMARIA_HOVER = "#353d5c"
@@ -19,6 +19,11 @@ QFrame#Formulario {{
 QLabel#Titulo {{
     font-size: 22px;
     font-weight: bold;
-    colaor {Cores.TEXTO}
+    color {Cores.TEXTO}
+}}
+QLabel#Subtitulo {{
+    font-size: 18px;
+    font-weight: normal;
+    color {Cores.TEXTO_SECUNDARIO}
 }}
 """
