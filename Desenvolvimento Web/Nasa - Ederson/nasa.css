@@ -49,8 +49,23 @@
 }
 
 .logo {
-    height: 100px;
+    height: 90px;
     width: 6vw;
     display: flex;
     justify-content: left;
+}
+
+.imagem {
+    height: 500px;
+    width: 500px;
+    display: flex;
+    align-content: center;
+    position: absolute;
+    top: 30%;
+    left: 35%;
+}
+
+.botao_logo {
+    background-color: black;
+    border: 0;
 }
