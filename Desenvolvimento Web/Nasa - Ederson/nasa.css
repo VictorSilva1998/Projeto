@@ -61,11 +61,36 @@
     display: flex;
     align-content: center;
     position: absolute;
-    top: 30%;
+    top: 25%;
     left: 35%;
 }
 
 .botao_logo {
     background-color: black;
     border: 0;
+}
+
+.reclamacao {
+    display: flex;
+    align-content: center;
+    position: absolute;
+    top: 90%
+}
+
+.texto {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    position: absolute;
+    top: 85%;
+    color: white;
+    width: 100vw;
+}
+
+.escolha {
+    display: flex;
+    align-content: center;
+    position: absolute;
+    top: 90%;
+    color: white;
 }
