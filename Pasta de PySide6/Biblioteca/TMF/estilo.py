@@ -3,92 +3,159 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPainter, QPixmap
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+)
 
-IMAGENS = Path (__file__).parent / "Images"
+IMAGENS = Path(__file__).parent / "Images"
 
-VERDE = "#48e40bff"
-VERDE_ESCURO = "#185300ff"
-CINZA = "#888888ff"
-TEXTO = "#000000"
-TEXTO_FRACO = "#353736"
+VERDE = "#0f766e"
+VERDE_ESCURO = "#115e59"
+CINZA = "#e2e8f0"
+TEXTO = "#0f172a"
+TEXTO_FRACO = "#64748b"
 
 QSS = f"""
-    QWidget {{ background: #ffffff; color: {TEXTO}; font-size: 14px; }}
-    QLabel {{ background: transparent; }}
-    QTabWidget::pane {{ border: 1px solid {CINZA}; border-radius: 10px; }}
-    QTabBar::tab {{
-        background: #f1f5f9; color: {TEXTO_FRACO};
-        padding: 12px 26px; margin-right: 4px;
-        border-top-left-radius: 10px; border-top-right-radius: 10px;
-        font-weight: 600;
-    }}
-    QTabBar::tab:selected {{ background: {VERDE}; color: #ffffff; }}
-    QTabBar::tab:disabled {{ color: #cbd5e1; }}
+QWidget {{ background: #ffffff; color: {TEXTO}; font-size: 14px; }}
+QLabel {{ background: transparent; }}
+QTabWidget::pane {{ border: 1px solid {CINZA}; border-radius: 10px; }}
+QTabBar::tab {{
+background: #f1f5f9; color: {TEXTO_FRACO};
+padding: 12px 26px; margin-right: 4px;
+border-top-left-radius: 10px; border-top-right-radius: 10px;
+font-weight: 600;
+}}
+QTabBar::tab:selected {{ background: {VERDE}; color: #ffffff; }}
+QTabBar::tab:disabled {{ color: #cbd5e1; }}
 
-    QLabel#titulo   {{ font-size: 24px; font-weight: 700; }}
-    QLabel#subtitulo{{ color: {TEXTO_FRACO}; }}
-    QLabel#rotulo   {{ font-weight: 600; font-size: 13px; }}
-    QLabel#erro     {{ color: #dc2626; font-size: 12px; }}
-    QLabel#saldo    {{ color: {VERDE}; font-size: 34px; font-weight: 700; }}
+QLabel#titulo   {{ font-size: 24px; font-weight: 700; }}
+QLabel#subtitulo{{ color: {TEXTO_FRACO}; }}
+QLabel#rotulo   {{ font-weight: 600; font-size: 13px; }}
+QLabel#erro     {{ color: #dc2626; font-size: 12px; }}
+QLabel#saldo    {{ color: {VERDE}; font-size: 34px; font-weight: 700; }}
 
-    QLineEdit {{
-        background: #f8fafc; border: 1.5px solid {CINZA}; border-radius: 8px;
-        padding: 0 12px; min-height: 42px;
-    }}
-    QLineEdit:focus {{ background: #ffffff; border-color: {VERDE}; }}
+QLineEdit {{
+    background: #f8fafc; border: 1.5px solid {CINZA}; border-radius: 8px;
+    padding: 0 12px; min-height: 42px;
+}}
+QLineEdit:focus {{ background: #ffffff; border-color: {VERDE}; }}
 
-    QPushButton {{
-        background: {VERDE}; color: #ffffff; border: none;
-        border-radius: 8px; min-height: 44px; font-weight: 600; padding: 0 18px;
-    }}
-    QPushButton:hover {{ background: {VERDE_ESCURO}; }}
-    QPushButton#secundario {{
-        background: #ffffff; color: {VERDE}; border: 1.5px solid {VERDE};
-    }}
-    QPushButton#secundario:hover {{ background: #f0fdfa; }}
-    QFrame#cartao {{ background: #f8fafc; border: 1px solid {CINZA}; border-radius: 12px; }}
+QPushButton {{
+    background: {VERDE}; color: #ffffff; border: none;
+    border-radius: 8px; min-height: 44px; font-weight: 600; padding: 0 18px;
+}}
+QPushButton:hover {{ background: {VERDE_ESCURO}; }}
+QPushButton#secundario {{
+    background: #ffffff; color: {VERDE}; border: 1.5px solid {VERDE};
+}}
+QPushButton#secundario:hover {{ background: #f0fdfa; }}
+QFrame#cartao {{ background: #f8fafc; border: 1px solid {CINZA}; border-radius: 12px; }}
 """
 
-def icone (nome, tamanho = 40, cor = VERDE):
-    pixmap = QPixmap (str (IMAGENS / nome)).scaled (tamanho, tamanho)
+def icone(nome, tamanho=40, cor=VERDE):
+    pixmap = QPixmap(str(IMAGENS / nome)).scaled(
+        tamanho, tamanho, Qt.KeepAspectRatio, Qt.SmoothTransformation
+    )
+    if cor:
+        painter = QPainter(pixmap)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+        painter.fillRect(pixmap.rect(), QColor(cor))
+        painter.end()
+    return pixmap
 
-def cabecalho (layout, arquivo, titulo, subtitulo):
-    linha = QVBoxLayout ()
-    linha.setSpacing (14)
 
-    imagem = QLabel ()
-    imagem.setPixmap (icone (arquivo, 44))
+def cabecalho(layout, arquivo, titulo, subtitulo):
+    linha = QHBoxLayout()
+    linha.setSpacing(14)
+    imagem = QLabel()
+    imagem.setPixmap(icone(arquivo, 44))
 
-    textos = QVBoxLayout ()
-    textos.setSpacing (2)
+    textos = QVBoxLayout()
+    textos.setSpacing(2)
 
-    rotulo = QLabel (titulo)
-    rotulo.setObjectName ("titulo")
+    rotulo = QLabel(titulo)
+    rotulo.setObjectName("titulo")
 
-    ajuda = QLabel (subtitulo)
-    ajuda.setObjectName ("subtitulo")
+    ajuda = QLabel(subtitulo)
+    ajuda.setObjectName("subtitulo")
 
-    textos.addWidget (rotulo)
-    textos.addWidget (ajuda)
+    textos.addWidget(rotulo)
+    textos.addWidget(ajuda)
 
-    linha.addWidget (imagem)
-    linha.addLayout (textos)
+    linha.addWidget(imagem)
+    linha.addLayout(textos)
+    linha.addStretch(1)
 
-    layout.addLayout (linha)
-    layout.addSpacing (24)
+    layout.addLayout(linha)
+    layout.addSpacing(24)
 
-def campo (layout, rotulo, placeholder, senha = False):
-    titulo = QLabel (rotulo)
-    titulo.setObjectName ("rotulo")
-    entrada = QLineEdit ()
-    entrada.setPlaceholderText (placeholder)
+
+def campo(layout, rotulo, placeholder, senha=False):
+    titulo = QLabel(rotulo)
+    titulo.setObjectName("rotulo")
+
+    entrada = QLineEdit()
+    entrada.setPlaceholderText(placeholder)
+
     if senha:
-        entrada.setEchoMode (QLineEdit.Password)
+        entrada.setEchoMode(QLineEdit.Password)
 
-    layout.addWidget (titulo)
-    layout.addSpacing (6)
-    layout.addWidget (entrada)
-    layout.addSpacing (6)
+    layout.addWidget(titulo)
+    layout.addSpacing(6)
+    layout.addWidget(entrada)
+    layout.addSpacing(16)
+
     return entrada
 
+
+def rotulo_erro(layout):
+    erro = QLabel()
+    erro.setObjectName("erro")
+    erro.setMinimumHeight(18)
+    erro.setWordWrap(True)
+
+    layout.addWidget(erro)
+    layout.addSpacing(8)
+
+    return erro
+
+
+def botao(texto, ao_clicar, secundario=False):
+    b = QPushButton(texto)
+    b.setCursor(Qt.PointingHandCursor)
+    b.clicked.connect(ao_clicar)
+
+    if secundario:
+        b.setObjectName("secundario")
+
+    return b
+
+
+@contextmanager
+def aguardando():
+    QApplication.setOverrideCursor(Qt.WaitCursor)
+    try:
+        yield
+    finally:
+        QApplication.restoreOverrideCursor()
+
+
+def moeda(valor):
+    return (
+        f"R$ {valor:,.2f}"
+        .replace(",", "*")
+        .replace(".", ",")
+        .replace("*", ".")
+    )
+
+
+def valor_digitado(texto):
+    try:
+        return float(texto.strip().replace(".", "").replace(",", "."))
+    except ValueError:
+        return None
