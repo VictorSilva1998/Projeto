@@ -1,17 +1,19 @@
 import json, os, sys, uuid, requests
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtWidgets import QApplication, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QMessageBox, QPushButton, QStackedWidget, QVBoxLayout, QWidget, QTabWidget
+from PySide6.QtWidgets import (
+                                QApplication, QGridLayout, QHBoxLayout, QLabel,
+                                QLineEdit, QListWidget, QMessageBox, QPushButton,
+                                QStackedWidget, QVBoxLayout, QWidget,
+                                QTabWidget, QTableWidget, QTableWidgetItem)
 from config import TITLE_ID, SECRET_KEY
 
 URL = f"https://{TITLE_ID}.playfabapi.com"
 BASE = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
 ICON = os.path.join(BASE, "tic-tac-toe.png")
-ICON2 = os.path.join(BASE, "convite.png")
 WINS = [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6)]
 ME = {"ticket": "", "id": "", "nome": ""}
 
-CONVITE, RANKING = 0, 1
 
 def api(path, data, admin=False):
     h = {"X-SecretKey": SECRET_KEY} if admin else {"X-Authorization": ME["ticket"]}
@@ -20,12 +22,15 @@ def api(path, data, admin=False):
         raise Exception(r.get("errorMessage", str(r)))
     return r["data"]
 
+
 def ler(chave, padrao=None):
     d = api("/Admin/GetTitleData", {"Keys": [chave]}, True)["Data"]
     return json.loads(d[chave]) if chave in d else padrao
 
+
 def gravar(chave, valor):
     api("/Admin/SetTitleData", {"Key": chave, "Value": json.dumps(valor)}, True)
+
 
 class Jogo(QWidget):
     def __init__(self):
@@ -35,10 +40,22 @@ class Jogo(QWidget):
         self.partida, self.meu_simbolo, self.tab, self.vez = "", "", " " * 9, "X"
         self.telas = QStackedWidget()
         QVBoxLayout(self).addWidget(self.telas)
-        self.telas.addWidget(self.tela_cadastro())
-        self.telas.addWidget(self.tela_convite())
-        self.telas.addWidget(self.tela_jogo())
-        self.timer = QTimer(self, interval=3000, timeout=self.atualizar)
+
+        self.tela_login_widget = self.tela_cadastro()
+
+        self.tabs = QTabWidget()
+
+        self.convite_widget = self.tela_convite()
+        self.ranking_widget = self.tela_ranking()
+
+        self.tabs.addTab(self.convite_widget, "Jogadores")
+        self.tabs.addTab(self.ranking_widget, "Ranking")
+
+        self.jogo_widget = self.tela_jogo()
+
+        self.telas.addWidget(self.tela_login_widget)
+        self.telas.addWidget(self.tabs)
+        self.telas.addWidget(self.jogo_widget)
 
     def tela_cadastro(self):
         t = QWidget()
@@ -63,25 +80,18 @@ class Jogo(QWidget):
 
     def entrar(self):
         def acao():
-            d = api("/Client/LoginWithEmailAddress", {"TitleId": TITLE_ID, "Email": self.email.text(), "Password": self.senha.text()})
+            d = api("/Client/LoginWithEmailAddress", {
+                "TitleId": TITLE_ID, "Email": self.email.text(), "Password": self.senha.text()})
             ME["ticket"], ME["id"] = d["SessionTicket"], d["PlayFabId"]
-            ME["nome"] = api("/Admin/GetUserAccountInfo", {"PlayFabId": ME["id"]}, True)["UserInfo"]["Username"]
+            ME["nome"] = api("/Admin/GetUserAccountInfo", {"PlayFabId": ME["id"]},
+                             True)["UserInfo"]["Username"]
             jogadores = ler("jogadores", {})
             jogadores[ME["nome"]] = ME["id"]
             gravar("jogadores", jogadores)
             self.telas.setCurrentIndex(1)
             self.carregar_jogadores()
+            self.carregar_ranking()
         self.tentar(acao)
-
-class Janela(QTabWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Jogo da Velha")
-        self.setWindowIcon(QIcon(ICON))
-
-        self.addTab (AbaConvite (self), "Convite")
-        self.addTab (AbaRanking (self), "Ranking")
-        self.setCurrentIndex(CONVITE)
 
     def tela_convite(self):
         t = QWidget()
@@ -146,12 +156,18 @@ class Janela(QTabWidget):
             self.casas.append(b)
         atual = QPushButton("Atualizar")
         atual.clicked.connect(self.atualizar)
+        self.btn_voltar = QPushButton("Voltar ao menu")
+        self.btn_voltar.clicked.connect(self.voltar_menu)
+        self.btn_voltar.hide()
         v.addLayout(topo)
         v.addLayout(g)
         v.addWidget(atual)
+        v.addWidget(self.btn_voltar)
         return t
 
     def abrir_jogo(self):
+        self.vitoria_registrada = False
+        self.btn_voltar.hide()
         self.telas.setCurrentIndex(2)
         self.timer.start()
         self.atualizar()
@@ -180,9 +196,17 @@ class Janela(QTabWidget):
             b.setText(tabuleiro[i])
         v = self.fim(tabuleiro)
         if v:
-            self.status.setText("Voce venceu!" if v == self.meu_simbolo else
-                                ("Empate!" if v == "-" else "Voce perdeu!"))
+            if v == self.meu_simbolo and not self.vitoria_registrada:
+                self.adicionar_vitoria()
+                self.vitoria_registrada = True
+
+            self.status.setText(
+                "Voce venceu!" if v == self.meu_simbolo
+                else ("Empate!" if v == "-" else "Voce perdeu!")
+    )
             self.timer.stop()
+            self.btn_voltar.show()
+
         else:
             self.status.setText(f"Voce e '{self.meu_simbolo}' - " +
                                 ("sua vez" if vez == self.meu_simbolo else "vez do adversario"))
@@ -198,6 +222,83 @@ class Janela(QTabWidget):
             acao()
         except Exception as e:
             QMessageBox.warning(self, "Erro", str(e))
+
+    def tela_ranking(self):
+        t = QWidget()
+        v = QVBoxLayout(t)
+
+        self.tabela_ranking = QTableWidget()
+        self.tabela_ranking.setColumnCount(3)
+        self.tabela_ranking.setHorizontalHeaderLabels(
+            ["Posição", "Jogador", "Vitórias"]
+        )
+
+        btn = QPushButton("Atualizar Ranking")
+        btn.clicked.connect(self.carregar_ranking)
+
+        v.addWidget(self.tabela_ranking)
+        v.addWidget(btn)
+
+        return t
+
+    def adicionar_vitoria(self):
+        ranking = ler("ranking", {}) or {}
+
+        nome = ME["nome"]
+
+        if nome not in ranking:
+            ranking[nome] = 0
+
+        ranking[nome] += 1
+
+        gravar("ranking", ranking)
+
+    def carregar_ranking(self):
+        def acao():
+            ranking = ler("ranking", {})
+
+            ranking_ordenado = sorted(
+                ranking.items(),
+                key=lambda x: x[1],
+                reverse=True
+            )
+
+            self.tabela_ranking.setRowCount(
+                len(ranking_ordenado)
+            )
+
+            for linha, (nome, pontos) in enumerate(ranking_ordenado):
+
+                self.tabela_ranking.setItem(
+                    linha, 0,
+                    QTableWidgetItem(str(linha + 1))
+                )
+
+                self.tabela_ranking.setItem(
+                    linha, 1,
+                    QTableWidgetItem(nome)
+                )
+
+                self.tabela_ranking.setItem(
+                    linha, 2,
+                    QTableWidgetItem(str(pontos))
+                )
+
+        self.tentar(acao)
+
+    def voltar_menu(self):
+        self.timer.stop()
+
+        self.partida = ""
+        self.tab = " " * 9
+        self.vez = "X"
+
+        self.btn_voltar.hide()
+
+        self.carregar_jogadores()
+        self.carregar_ranking()
+
+        self.telas.setCurrentIndex(1)
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon(ICON))
