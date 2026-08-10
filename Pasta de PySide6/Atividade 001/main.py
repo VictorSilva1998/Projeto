@@ -6,14 +6,15 @@ from PySide6.QtWidgets import (
                                 QLineEdit, QListWidget, QMessageBox, QPushButton,
                                 QStackedWidget, QVBoxLayout, QWidget,
                                 QTabWidget, QTableWidget, QTableWidgetItem)
+
 from config import TITLE_ID, SECRET_KEY
+from estilo import ESTILO
 
 URL = f"https://{TITLE_ID}.playfabapi.com"
 BASE = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
 ICON = os.path.join(BASE, "tic-tac-toe.png")
 WINS = [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6)]
 ME = {"ticket": "", "id": "", "nome": ""}
-
 
 def api(path, data, admin=False):
     h = {"X-SecretKey": SECRET_KEY} if admin else {"X-Authorization": ME["ticket"]}
@@ -22,21 +23,19 @@ def api(path, data, admin=False):
         raise Exception(r.get("errorMessage", str(r)))
     return r["data"]
 
-
 def ler(chave, padrao=None):
     d = api("/Admin/GetTitleData", {"Keys": [chave]}, True)["Data"]
     return json.loads(d[chave]) if chave in d else padrao
 
-
 def gravar(chave, valor):
     api("/Admin/SetTitleData", {"Key": chave, "Value": json.dumps(valor)}, True)
-
 
 class Jogo(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Jogo da Velha - PlayFab")
         self.setWindowIcon(QIcon(ICON))
+        self.setStyleSheet (ESTILO)
         self.partida, self.meu_simbolo, self.tab, self.vez = "", "", " " * 9, "X"
         self.telas = QStackedWidget()
         QVBoxLayout(self).addWidget(self.telas)
@@ -56,6 +55,7 @@ class Jogo(QWidget):
         self.telas.addWidget(self.tela_login_widget)
         self.telas.addWidget(self.tabs)
         self.telas.addWidget(self.jogo_widget)
+        self.timer = QTimer(self, interval=3000, timeout=self.atualizar)
 
     def tela_cadastro(self):
         t = QWidget()
@@ -97,11 +97,12 @@ class Jogo(QWidget):
         t = QWidget()
         v = QVBoxLayout(t)
         self.lista = QListWidget()
-        b0, b1, b2 = QPushButton("Atualizar lista"), QPushButton("Convidar selecionado"), QPushButton("Ver convite recebido")
+        b0, b1, b2, b3 = QPushButton("Atualizar lista"), QPushButton("Convidar selecionado"), QPushButton("Ver convite recebido"), QPushButton("Sair")
         b0.clicked.connect(self.carregar_jogadores)
         b1.clicked.connect(self.convidar)
         b2.clicked.connect(self.aceitar)
-        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, b0, b1, b2):
+        b3.clicked.connect(self.sair)
+        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, b0, b1, b2, b3):
             v.addWidget(w)
         return t
 
@@ -299,6 +300,15 @@ class Jogo(QWidget):
         self.carregar_ranking()
 
         self.telas.setCurrentIndex(1)
+
+    def limpar(self):
+        self.email.clear()
+        self.senha.clear()
+        self.usuario.clear()
+        
+    def sair(self):
+        self.limpar()
+        self.telas.setCurrentIndex(0)
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon(ICON))
