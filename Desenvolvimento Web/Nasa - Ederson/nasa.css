@@ -38,13 +38,13 @@
     border-style: solid;
     border-color: black;
     align-content: center;
-    background-color: white;
+    background-color: black;
     text-align: center;
 }
 
 .botao {
     background-color: red;
-    height: 94px;
+    height: 40px;
     width: 94px;
 }
 
@@ -56,13 +56,13 @@
 }
 
 .imagem {
-    height: 500px;
-    width: 500px;
+    height: 40vh;
+    width: 40vw;
     display: flex;
     align-content: center;
     position: absolute;
     top: 25%;
-    left: 35%;
+    left: 38%;
 }
 
 .botao_logo {

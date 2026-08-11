@@ -201,10 +201,7 @@ class Jogo(QWidget):
                 self.adicionar_vitoria()
                 self.vitoria_registrada = True
 
-            self.status.setText(
-                "Voce venceu!" if v == self.meu_simbolo
-                else ("Empate!" if v == "-" else "Voce perdeu!")
-    )
+            self.status.setText("Voce venceu!" if v == self.meu_simbolo else ("Empate!" if v == "-" else "Voce perdeu!"))
             self.timer.stop()
             self.btn_voltar.show()
 
@@ -227,78 +224,44 @@ class Jogo(QWidget):
     def tela_ranking(self):
         t = QWidget()
         v = QVBoxLayout(t)
-
         self.tabela_ranking = QTableWidget()
         self.tabela_ranking.setColumnCount(3)
-        self.tabela_ranking.setHorizontalHeaderLabels(
-            ["Posição", "Jogador", "Vitórias"]
-        )
-
+        self.tabela_ranking.setHorizontalHeaderLabels(["Posição", "Jogador", "Vitórias"])
         btn = QPushButton("Atualizar Ranking")
         btn.clicked.connect(self.carregar_ranking)
-
         v.addWidget(self.tabela_ranking)
         v.addWidget(btn)
-
         return t
 
     def adicionar_vitoria(self):
         ranking = ler("ranking", {}) or {}
-
         nome = ME["nome"]
-
         if nome not in ranking:
             ranking[nome] = 0
-
         ranking[nome] += 1
-
         gravar("ranking", ranking)
 
     def carregar_ranking(self):
         def acao():
             ranking = ler("ranking", {})
-
-            ranking_ordenado = sorted(
-                ranking.items(),
-                key=lambda x: x[1],
-                reverse=True
-            )
-
-            self.tabela_ranking.setRowCount(
-                len(ranking_ordenado)
-            )
+            ranking_ordenado = sorted(ranking.items(), key=lambda x: x[1], reverse=True)
+            self.tabela_ranking.setRowCount(len (ranking_ordenado))
 
             for linha, (nome, pontos) in enumerate(ranking_ordenado):
-
-                self.tabela_ranking.setItem(
-                    linha, 0,
-                    QTableWidgetItem(str(linha + 1))
-                )
-
-                self.tabela_ranking.setItem(
-                    linha, 1,
-                    QTableWidgetItem(nome)
-                )
-
-                self.tabela_ranking.setItem(
-                    linha, 2,
-                    QTableWidgetItem(str(pontos))
-                )
+                self.tabela_ranking.setItem (linha, 0, QTableWidgetItem(str(linha + 1)))
+                self.tabela_ranking.setItem (linha, 1, QTableWidgetItem(nome))
+                self.tabela_ranking.setItem(linha, 2, QTableWidgetItem(str(pontos)))
 
         self.tentar(acao)
 
     def voltar_menu(self):
         self.timer.stop()
-
         self.partida = ""
         self.tab = " " * 9
         self.vez = "X"
-
         self.btn_voltar.hide()
-
         self.carregar_jogadores()
         self.carregar_ranking()
-
         self.telas.setCurrentIndex(1)
 
     def limpar(self):
