@@ -147,7 +147,6 @@ class Jogo(QWidget):
             QMessageBox.warning(self, "Erro", "A aposta deve ser maior que zero.")
             return
         
-        self.partida = uuid.uuid4().hex[:12]
         self.meu_simbolo = "X"
         gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"], "adversario": item.text()})
 
@@ -215,7 +214,11 @@ class Jogo(QWidget):
         self.atualizar()
 
     def salvar(self, tabuleiro, vez):
-        gravar("partida_" + self.partida, {"t": tabuleiro, "v": vez})
+        dados = ler("partida_" + self.partida, {})
+        dados["t"] = tabuleiro
+        dados["v"] = vez
+        gravar("partida_" + self.partida, dados)
+        self.mostrar(tabuleiro, vez)
         self.mostrar(tabuleiro, vez)
 
     def atualizar(self):
