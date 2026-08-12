@@ -88,6 +88,10 @@ class Jogo(QWidget):
             jogadores = ler("jogadores", {})
             jogadores[ME["nome"]] = ME["id"]
             gravar("jogadores", jogadores)
+            economia = ler("economia", {}) or {}
+            if ME["nome"] not in economia:
+                economia[ME["nome"]] = {"saldo": 1000}
+            gravar("economia", economia)
             self.telas.setCurrentIndex(1)
             self.carregar_jogadores()
             self.carregar_ranking()
@@ -97,12 +101,17 @@ class Jogo(QWidget):
         t = QWidget()
         v = QVBoxLayout(t)
         self.lista = QListWidget()
+        self.valor_aposta = QLineEdit()
+        self.lbl_saldo = QLabel()
+        v.addWidget(self.lbl_saldo)
+        self.valor_aposta.setPlaceholderText("Valor da aposta")
+        self.lbl_saldo.setText(f"Saldo: {self.saldo()} moedas")
         b0, b1, b2, b3 = QPushButton("Atualizar lista"), QPushButton("Convidar selecionado"), QPushButton("Ver convite recebido"), QPushButton("Sair")
         b0.clicked.connect(self.carregar_jogadores)
         b1.clicked.connect(self.convidar)
         b2.clicked.connect(self.aceitar)
         b3.clicked.connect(self.sair)
-        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, b0, b1, b2, b3):
+        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, self.valor_aposta, b0, b1, b2, b3):
             v.addWidget(w)
         return t
 
@@ -122,6 +131,10 @@ class Jogo(QWidget):
 
         def acao():
             oid = self.jogadores[item.text()]
+            valor = int(self.valor_aposta.text())
+            if self.saldo() < valor:
+                raise Exception("Saldo insuficiente.")
+            gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"]})
             self.partida, self.meu_simbolo = uuid.uuid4().hex[:12], "X"
             self.salvar(" " * 9, "X")
             api("/Server/UpdateUserData", {"PlayFabId": oid, "Data": {"convite": self.partida}}, True)
@@ -134,6 +147,10 @@ class Jogo(QWidget):
             if "convite" not in d:
                 raise Exception("Nenhum convite recebido ainda.")
             self.partida, self.meu_simbolo = d["convite"]["Value"], "O"
+            partida = ler("partida_" + self.partida)
+            valor = partida["aposta"]
+            if self.saldo() < valor:
+                raise Exception(f"Voce precisa de {valor} moedas para aceitar.")
             self.abrir_jogo()
         self.tentar(acao)
 
@@ -168,6 +185,8 @@ class Jogo(QWidget):
 
     def abrir_jogo(self):
         self.vitoria_registrada = False
+        dados = ler("partida_" + self.partida)
+        self.aposta = dados.get("aposta", 0)
         self.btn_voltar.hide()
         self.telas.setCurrentIndex(2)
         self.timer.start()
@@ -199,6 +218,8 @@ class Jogo(QWidget):
         if v:
             if v == self.meu_simbolo and not self.vitoria_registrada:
                 self.adicionar_vitoria()
+                vencedor = ME["nome"]
+                self.pagar_aposta (vencedor)
                 self.vitoria_registrada = True
 
             self.status.setText("Voce venceu!" if v == self.meu_simbolo else ("Empate!" if v == "-" else "Voce perdeu!"))
@@ -272,6 +293,45 @@ class Jogo(QWidget):
     def sair(self):
         self.limpar()
         self.telas.setCurrentIndex(0)
+
+    def adicionar_saldo(nome, valor):
+        economia = ler("economia", {}) or {}
+        if nome not in economia:
+            economia[nome] = {"saldo": 0}
+        economia[nome]["saldo"] += valor
+        gravar("economia", economia)
+
+    def saldo(self, nome=None):
+        nome = nome or ME["nome"]
+        economia = ler("economia", {}) or {}
+        if nome not in economia:
+            economia[nome] = {"saldo": 1000}
+            gravar("economia", economia)
+        return economia[nome]["saldo"]
+
+
+def alterar_saldo(self, nome, valor):
+    economia = ler("economia", {}) or {}
+    if nome not in economia:
+        economia[nome] = {"saldo": 1000}
+    economia[nome]["saldo"] += valor
+    gravar("economia", economia)
+
+def pagar_aposta(self, vencedor):
+    dados = ler("partida_" + self.partida)
+    if dados.get("premio_pago"):
+        return
+    aposta = dados["aposta"]
+    criador = dados["criador"]
+    if vencedor == criador:
+        adversario = self.oponente
+    else:
+        adversario = criador
+    self.alterar_saldo(criador, -aposta)
+    self.alterar_saldo(adversario, -aposta)
+    self.alterar_saldo(vencedor, aposta * 2)
+    dados["premio_pago"] = True
+    gravar("partida_" + self.partida, dados)
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon(ICON))
