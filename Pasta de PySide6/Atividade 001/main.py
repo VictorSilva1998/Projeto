@@ -83,8 +83,7 @@ class Jogo(QWidget):
             d = api("/Client/LoginWithEmailAddress", {
                 "TitleId": TITLE_ID, "Email": self.email.text(), "Password": self.senha.text()})
             ME["ticket"], ME["id"] = d["SessionTicket"], d["PlayFabId"]
-            ME["nome"] = api("/Admin/GetUserAccountInfo", {"PlayFabId": ME["id"]},
-                             True)["UserInfo"]["Username"]
+            ME["nome"] = api("/Admin/GetUserAccountInfo", {"PlayFabId": ME["id"]}, True)["UserInfo"]["Username"]
             jogadores = ler("jogadores", {})
             jogadores[ME["nome"]] = ME["id"]
             gravar("jogadores", jogadores)
@@ -102,16 +101,19 @@ class Jogo(QWidget):
         v = QVBoxLayout(t)
         self.lista = QListWidget()
         self.valor_aposta = QLineEdit()
+        self.valor_deposito = QLineEdit()
+        self.valor_deposito.setPlaceholderText ("Valor do depósito")
         self.lbl_saldo = QLabel()
         v.addWidget(self.lbl_saldo)
         self.valor_aposta.setPlaceholderText("Valor da aposta")
         self.lbl_saldo.setText(f"Saldo: {self.saldo()} moedas")
-        b0, b1, b2, b3 = QPushButton("Atualizar lista"), QPushButton("Convidar selecionado"), QPushButton("Ver convite recebido"), QPushButton("Sair")
-        b0.clicked.connect(self.carregar_jogadores)
-        b1.clicked.connect(self.convidar)
-        b2.clicked.connect(self.aceitar)
-        b3.clicked.connect(self.sair)
-        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, self.valor_aposta, b0, b1, b2, b3):
+        b0, b1, b2, b3, b4 = QPushButton("Depositar"), QPushButton("Atualizar lista"), QPushButton("Convidar selecionado"), QPushButton("Ver convite recebido"), QPushButton("Sair")
+        b0.clicked.connect(self.depositar)
+        b1.clicked.connect(self.carregar_jogadores)
+        b2.clicked.connect(self.convidar)
+        b3.clicked.connect(self.aceitar)
+        b4.clicked.connect(self.sair)
+        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, self.valor_aposta, b0, b1, b2, b3, b4):
             v.addWidget(w)
         return t
 
@@ -309,29 +311,56 @@ class Jogo(QWidget):
             gravar("economia", economia)
         return economia[nome]["saldo"]
 
+    def alterar_saldo(self, nome, valor):
+        economia = ler("economia", {}) or {}
+        if nome not in economia:
+            economia[nome] = {"saldo": 1000}
+        economia[nome]["saldo"] += valor
+        gravar("economia", economia)
 
-def alterar_saldo(self, nome, valor):
-    economia = ler("economia", {}) or {}
-    if nome not in economia:
-        economia[nome] = {"saldo": 1000}
-    economia[nome]["saldo"] += valor
-    gravar("economia", economia)
+    def pagar_aposta(self, vencedor):
+        dados = ler("partida_" + self.partida)
+        if dados.get("premio_pago"):
+            return
+        aposta = dados["aposta"]
+        criador = dados["criador"]
+        if vencedor == criador:
+            adversario = self.oponente
+        else:
+            adversario = criador
+        self.alterar_saldo(criador, -aposta)
+        self.alterar_saldo(adversario, -aposta)
+        self.alterar_saldo(vencedor, aposta * 2)
+        dados["premio_pago"] = True
+        gravar("partida_" + self.partida, dados)
 
-def pagar_aposta(self, vencedor):
-    dados = ler("partida_" + self.partida)
-    if dados.get("premio_pago"):
-        return
-    aposta = dados["aposta"]
-    criador = dados["criador"]
-    if vencedor == criador:
-        adversario = self.oponente
-    else:
-        adversario = criador
-    self.alterar_saldo(criador, -aposta)
-    self.alterar_saldo(adversario, -aposta)
-    self.alterar_saldo(vencedor, aposta * 2)
-    dados["premio_pago"] = True
-    gravar("partida_" + self.partida, dados)
+    def depositar_saldo (self, valor):
+        if valor <= 0:
+            raise Exception ("O valor do depósito deve ser maior que zero.")
+        economia = ler ("economia", {}) or {}
+
+        if ME ["nome"] not in economia:
+            economia [ME ["nome"]] = {"saldo": 1000}
+
+        economia [ME ["nome"]]["saldo"] += valor
+        gravar ("economia", economia)
+        self.lbl_saldo.setText (f"Saldo: {economia [ME ["nome"]] ["saldo"]} moedas.")
+        QMessageBox.information (self, "Depósito", f"{valor} moedas adicionadas com sucesso.")
+
+    def depositar (self):
+        try:
+            valor = int (self.valor_deposito.text ())
+
+            if valor <= 0:
+                raise Exception ("Digite um valor maior que zero.")
+            self.depositar_saldo (valor)
+            self.valor_deposito.clear()
+
+        except ValueError:
+            QMessageBox.warning (self, "Erro", "Digite um valor numérico válido.")
+
+        except Exception as e:
+            QMessageBox.warning (self, "Erro", str (e))
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon(ICON))
