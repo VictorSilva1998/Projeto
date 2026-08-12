@@ -92,6 +92,7 @@ class Jogo(QWidget):
                 economia[ME["nome"]] = {"saldo": 1000}
             gravar("economia", economia)
             self.telas.setCurrentIndex(1)
+            self.atualizar_saldo()
             self.carregar_jogadores()
             self.carregar_ranking()
         self.tentar(acao)
@@ -113,7 +114,7 @@ class Jogo(QWidget):
         b2.clicked.connect(self.convidar)
         b3.clicked.connect(self.aceitar)
         b4.clicked.connect(self.sair)
-        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, self.valor_aposta, b0, b1, b2, b3, b4):
+        for w in (QLabel("<h3>Jogadores cadastrados</h3>"), self.lista, self.valor_aposta, self.valor_deposito, b0, b1, b2, b3, b4):
             v.addWidget(w)
         return t
 
@@ -130,6 +131,25 @@ class Jogo(QWidget):
         item = self.lista.currentItem()
         if not item:
             return QMessageBox.warning(self, "Erro", "Selecione um jogador na lista.")
+        
+        texto = self.valor_aposta.text().strip()
+        if not texto:
+            QMessageBox.warning(self, "Erro", "Informe o valor da aposta.")
+            return
+
+        try:
+            valor = int(texto)
+        except ValueError:
+            QMessageBox.warning(self, "Erro", "Digite apenas números.")
+            return
+
+        if valor <= 0:
+            QMessageBox.warning(self, "Erro", "A aposta deve ser maior que zero.")
+            return
+        
+        self.partida = uuid.uuid4().hex[:12]
+        self.meu_simbolo = "X"
+        gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"], "adversario": item.text()})
 
         def acao():
             oid = self.jogadores[item.text()]
@@ -286,6 +306,7 @@ class Jogo(QWidget):
         self.carregar_jogadores()
         self.carregar_ranking()
         self.telas.setCurrentIndex(1)
+        self.atualizar_saldo()
 
     def limpar(self):
         self.email.clear()
@@ -296,7 +317,7 @@ class Jogo(QWidget):
         self.limpar()
         self.telas.setCurrentIndex(0)
 
-    def adicionar_saldo(nome, valor):
+    def adicionar_saldo(self, nome, valor):
         economia = ler("economia", {}) or {}
         if nome not in economia:
             economia[nome] = {"saldo": 0}
@@ -324,15 +345,13 @@ class Jogo(QWidget):
             return
         aposta = dados["aposta"]
         criador = dados["criador"]
-        if vencedor == criador:
-            adversario = self.oponente
-        else:
-            adversario = criador
+        adversario = dados["adversario"]
         self.alterar_saldo(criador, -aposta)
         self.alterar_saldo(adversario, -aposta)
         self.alterar_saldo(vencedor, aposta * 2)
         dados["premio_pago"] = True
         gravar("partida_" + self.partida, dados)
+        self.atualizar_saldo()
 
     def depositar_saldo (self, valor):
         if valor <= 0:
@@ -344,7 +363,7 @@ class Jogo(QWidget):
 
         economia [ME ["nome"]]["saldo"] += valor
         gravar ("economia", economia)
-        self.lbl_saldo.setText (f"Saldo: {economia [ME ["nome"]] ["saldo"]} moedas.")
+        self.atualizar_saldo()
         QMessageBox.information (self, "Depósito", f"{valor} moedas adicionadas com sucesso.")
 
     def depositar (self):
@@ -361,6 +380,9 @@ class Jogo(QWidget):
 
         except Exception as e:
             QMessageBox.warning (self, "Erro", str (e))
+
+    def atualizar_saldo (self):
+        self.lbl_saldo.setText (f"Saldo: {self.saldo ()} moedas.")
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon(ICON))
