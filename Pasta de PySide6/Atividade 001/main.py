@@ -147,6 +147,7 @@ class Jogo(QWidget):
             QMessageBox.warning(self, "Erro", "A aposta deve ser maior que zero.")
             return
         
+        self.partida, self.meu_simbolo = uuid.uuid4().hex[:12], "X"
         self.meu_simbolo = "X"
         gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"], "adversario": item.text()})
 
@@ -155,8 +156,7 @@ class Jogo(QWidget):
             valor = int(self.valor_aposta.text())
             if self.saldo() < valor:
                 raise Exception("Saldo insuficiente.")
-            gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"]})
-            self.partida, self.meu_simbolo = uuid.uuid4().hex[:12], "X"
+            gravar("partida_" + self.partida, {"t": " " * 9, "v": "X", "aposta": valor, "criador": ME["nome"], "adversario": item.text()})
             self.salvar(" " * 9, "X")
             api("/Server/UpdateUserData", {"PlayFabId": oid, "Data": {"convite": self.partida}}, True)
             self.abrir_jogo()
@@ -164,14 +164,21 @@ class Jogo(QWidget):
 
     def aceitar(self):
         def acao():
-            d = api("/Client/GetUserData", {"Keys": ["convite"]})["Data"]
-            if "convite" not in d:
-                raise Exception("Nenhum convite recebido ainda.")
-            self.partida, self.meu_simbolo = d["convite"]["Value"], "O"
+            dados = api("/Client/GetUserData", {"Keys": ["convite"]})["Data"]
+            convite_data = dados.get("convite")
+            if not convite_data:
+                raise Exception("Nenhum convite recebido.")
+            convite = convite_data.get("Value")
+            if not convite:
+                raise Exception("Convite inválido.")
+            self.partida = convite
+            self.meu_simbolo = "O"
             partida = ler("partida_" + self.partida)
-            valor = partida["aposta"]
+            if not partida:
+                raise Exception(f"A partida '{self.partida}' não foi encontrada.")
+            valor = partida.get("aposta", 0)
             if self.saldo() < valor:
-                raise Exception(f"Voce precisa de {valor} moedas para aceitar.")
+                raise Exception(f"Você precisa de {valor} moedas para aceitar.")
             self.abrir_jogo()
         self.tentar(acao)
 
@@ -219,9 +226,10 @@ class Jogo(QWidget):
         dados["v"] = vez
         gravar("partida_" + self.partida, dados)
         self.mostrar(tabuleiro, vez)
-        self.mostrar(tabuleiro, vez)
 
     def atualizar(self):
+        if not self.partida:
+            return
         def acao():
             e = ler("partida_" + self.partida)
             if e:
