@@ -6,7 +6,7 @@
 
 .cabecalho {
     background-color: black;
-    height: 100px;
+    height: 80px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -24,7 +24,7 @@
 }
 
 .barra_de_menus {
-    height: 100px;
+    height: 80px;
     width: 90vw;
     display: flex;
     flex-direction: row;
@@ -32,7 +32,7 @@
 }
 
 .menu {
-    height: 100px;
+    height: 80px;
     width: 100px;
     border: 1;
     border-style: solid;
@@ -43,30 +43,57 @@
 }
 
 .botao {
-    background-color: red;
+    background-color: silver;
     height: 40px;
     width: 94px;
 }
 
+.botao:hover {
+    background-color: rgba(192, 192, 192, 0.623);
+}
+
+.botao:active {
+    background-color: rgba(192, 192, 192, 0.322);
+    transition: 200ms;
+}
+
 .logo {
-    height: 90px;
+    height: 80px;
     width: 6vw;
     display: flex;
     justify-content: left;
 }
 
-.imagem {
-    height: 40vh;
-    width: 40vw;
-    display: flex;
-    align-content: center;
+.div_imagem {
     position: absolute;
     top: 25%;
-    left: 38%;
+    left: 38%;   
+    height: 40vh;
+    width: 40vw;
+}
+.imagem {
+    display: flex;
+    align-content: center;
+}
+
+@keyframes girar {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+.imagem:hover {
+    animation: girar 5s linear infinite;
 }
 
 .botao_logo {
+    height: 80px;
+    width: 6vw;
     background-color: black;
+    border: 0;
+}
+
+.botao_logo:hover {
+    background-color: rgb(56, 56, 56);
     border: 0;
 }
 
