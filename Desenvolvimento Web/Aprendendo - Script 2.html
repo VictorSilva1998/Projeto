@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>My First Web Page</h1>
+    <script>
+        let p1 = window.prompt ("Escreva o valor de p1:")
+        p1 = parseInt (p1);
+        let p2 = window.prompt ("Escreva o valor de p2:")
+        p2 = parseInt (p2);
+
+        function myFunction (p1, p2) {
+            return p1 * p2;
+        }
+        
+        let idade = window.prompt ("Qual a sua idade?")
+        idade = parseInt (idade);
+        if (idade <= 16) {
+            console.log ("Adolescente");
+        }
+        
+        else if (idade > 16 && idade < 40) {
+            console.log ("Adulto");
+        }
+        
+        else {
+            console.log ("Idoso")
+        }
+        // idade = parseInt (idade);
+        // salario = parseFloat (salario);
+
+        document.write (5+6);
+        document.write (Date ());
+        let text = "HELLO WORLD";
+        let char = text.charAt(0);
+
+        switch (new Date().getDay()) {
+            case 0:
+                day = "Domingo";
+                break;
+            case 1:
+                day = "Segunda";
+                break;
+            case 2:
+                day = "Terça";
+                break;
+            case 3:
+                day = "Quarta";
+                break;
+            case 4:
+                day = "Quinta";
+                break;
+            case 5:
+                day = "Sexta";
+                break;
+            case 6:
+                day = "Sabado";
+                break;
+        }
+        window.alert(day)
+
+        var i = 0
+        while (i < 10) {
+            var texto;
+            texto = "O número é" + i;
+            console.log (texto);
+            i++;
+        }
+
+        do {
+            let i = 10
+            text = "The number is" + i;
+            i++;
+        }
+        while (i < 10);
+
+        // for ([inicialização]; [condição]; [expressão final])
+        //     declaração
+
+        for (var i = 0; i < 9; i++) {
+            console.log (i);
+            //more statements
+        }
+    </script>
+</body>
+</html>
