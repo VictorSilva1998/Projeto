@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const n1 = parseFloat (prompt("Digite a Nota 1:"));
+        const n2 = parseFloat (prompt("Digite a Nota 2:"));
+        const frequencia = parseFloat(prompt("Digite a frequência do aluno (em %):"));
+
+        const media = (n1 + n2) / 2;
+
+        if (media >= 7 && frequencia >= 75) {
+            alert(`Aprovado! Média: ${media.toFixed(1)} | Frequência: ${frequencia}%`);
+        }
+        
+        else {
+            alert(`Reprovado! Média: ${media.toFixed(1)} | Frequência: ${frequencia}%`);
+        }
+    </script>
+</body>
+</html>

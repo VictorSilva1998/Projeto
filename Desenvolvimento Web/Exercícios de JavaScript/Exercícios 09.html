@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const valor = parseFloat (prompt ("Qual foi o valor da compra?"));
+        const cadastro = prompt ("O cliente é cadastrado? (Responda com sim ou não)").toLowerCase() === 'sim';
+
+        if (valor >= 200 || cadastro) {
+            alert ("Desconto concedido.")
+        }
+        else {
+            alert ("Desconto não concedido.")
+        }
+    </script>
+</body>
+</html>

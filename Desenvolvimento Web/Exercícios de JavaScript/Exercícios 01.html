@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let p1 = window.prompt ("Escreva o valor de p1:")
+        p1 = parseInt (p1);
+        let p2 = window.prompt ("Escreva o valor de p2:")
+        p2 = parseInt (p2);
+
+        if (isNaN (p1) || isNaN (p2)) {
+            alert ("Por favor, digite apenas números");
+        }
+
+        else {
+            if (p1 === p2) {
+                alert ("Os dois números são iguais.");
+            }
+
+            else {
+                if (p1 > p2) {
+                    alert(`O maior número é: ${p1}`);
+                }
+
+                else {
+                    alert(`O maior número é: ${p2}`);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
