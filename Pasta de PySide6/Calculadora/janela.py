@@ -83,7 +83,7 @@ class Calculadora(QWidget):
         for texto, linha, coluna in botoes:
             botao = QPushButton(texto)
             largura = 2 if texto == "=" else 1
-            botao.clicked.connect(lambda checked=False, t=texto: self.clicar(t))
+            botao.clicked.connect(self.criar_acao(texto))
             grade.addWidget(botao, linha, coluna, 1, largura)
         
         layout = QVBoxLayout()
@@ -93,7 +93,7 @@ class Calculadora(QWidget):
         self.setLayout(layout)
 
     def criar_acao(self, texto):
-        pass #1
+        return lambda checked=False: self.clicar(texto)
     
     def clicar(self, texto):
         if texto.isdigit():
@@ -140,7 +140,24 @@ class Calculadora(QWidget):
         self.visor.setText(self.digitado)
     
     def escolher_operacao(self, simbolo):
-        self.a = self.valor_do_visor()
+        if self.classe is not None and not self.zerar:
+            b = self.valor_do_visor()
+
+            try:
+                operacao = self.classe(self.a, b)
+                self.a = operacao.calcular()
+            except ZeroDivisionError:
+                self.visor.setText("Erro")
+                self.conta.setText("Divisão por zero")
+                self.classe = None
+                self.a = None
+                return
+
+            self.mostrar(self.a)
+
+        else:
+            self.a = self.valor_do_visor()
+
         self.classe = OPERACOES[simbolo]
         self.conta.setText(f"{self.a:g} {simbolo}")
         self.zerar = True
@@ -152,7 +169,17 @@ class Calculadora(QWidget):
         b = self.valor_do_visor()
 
         operacao = self.classe(self.a, b)
-        resultado = operacao.calcular()
+
+        try:
+            resultado = operacao.calcular()
+
+        except ZeroDivisionError:
+            self.visor.setText("Erro")
+            self.conta.setText("Divisão por zero")
+            self.a = None
+            self.classe = None
+            self.zerar = True
+            return
 
         expressao = f"{self.a:g} {operacao.simbolo} {b:g} ="
 
