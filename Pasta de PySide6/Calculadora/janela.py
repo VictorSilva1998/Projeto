@@ -93,7 +93,7 @@ class Calculadora(QWidget):
         self.setLayout(layout)
 
     def criar_acao(self, texto):
-        return lambda checked=False: self.clicar(texto)
+        return lambda: self.clicar(texto)
     
     def clicar(self, texto):
         if texto.isdigit():
