@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let idade = window.prompt ("Qual a sua idade?")
+        idade = parseInt (idade);
+        if (idade <= 12) {
+            window.alert ("Criança");
+        }
+        
+        else if (idade >= 13 && idade <= 17) {
+            window.alert ("Adolescente");
+        }
+
+        else if (idade >=18 && idade <= 59) {
+            window.alert ("Adulto")
+        }
+        
+        else {
+            window.alert ("Idoso")
+        }
+    </script>
+</body>
+</html>

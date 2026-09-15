@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let saldo = 1000.00;
+        let opcao;
+
+        do {
+            opcao = prompt(
+                "Escolha uma opção:\n\n" +
+                "1 - Consultar saldo\n" +
+                "2 - Fazer depósito\n" +
+                "3 - Fazer saque\n" +
+                "0 - Sair"
+            );
+
+            switch (opcao) {
+                case "1":
+                    alert("Seu saldo atual é: R$ " + saldo.toFixed(2));
+                    break;
+
+                case "2":
+                    let deposito = parseFloat(prompt("Digite o valor do depósito:"));
+                    if (!isNaN(deposito) && deposito > 0) {
+                        saldo += deposito;
+                        alert("Depósito realizado! Novo saldo: R$ " + saldo.toFixed(2));
+                    } else {
+                        alert("Valor inválido.");
+                    }
+                    break;
+
+                case "3":
+                    let saque = parseFloat(prompt("Digite o valor do saque:"));
+                    if (!isNaN(saque) && saque > 0 && saque <= saldo) {
+                        saldo -= saque;
+                        alert("Saque realizado! Novo saldo: R$ " + saldo.toFixed(2));
+                    } else {
+                        alert("Saldo insuficiente ou valor inválido.");
+                    }
+                    break;
+
+                case "0":
+                    alert("Saindo do sistema.");
+                    break;
+
+                default:
+                    alert("Opção inválida! Tente novamente.");
+            }
+        }
+        
+        while (opcao !== "0" && opcao !== null);
+    </script>
+</body>
+</html>

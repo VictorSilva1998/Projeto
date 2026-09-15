@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p><i>Parágrafo 1</i></p>
+    <p>Parágrafo 2</p>
+
+    <h1>Quem descobriu o Brasil?</h1>
+
+    <button class="padrao" id="ida" onclick="fa()">
+        Pedro Álvares Cabral
+    </button>
+
+    <button class="padrao" id="adi" onclick="fe()">
+        Pedro Bial
+    </button>
+
+    <button class="padrao" id="ada" onclick="fi()">
+        Valeska Popuzuda
+    </button>
+
+    <button class="padrao" id="eda" onclick="fo()">
+        Marcelo D2
+    </button>
+
+    <button class="padrao" id="idi" onclick="fu()">
+        Fausto Silva
+    </button>
+
+    <script>
+        var p1 = window.document.getElementsByTagName ("p") [1];
+        p1.style.background = "blue";
+
+        var p2 = window.document.getElementsByTagName ("p") [0];
+        p2.innerHTML = "<i>blue</i>"
+
+        function fa() {
+            var a = window.document.getElementById ("ida")
+            a.innerText = "Certa Resposta"
+            a.style.backgroundColor = "green"
+        }
+
+        function fe() {
+            var b = window.document.getElementById ("adi")
+            b.innerText = "Resposta Errada"
+            b.style.backgroundColor = "red"
+        }
+
+        function fi() {
+            var b = window.document.getElementById ("ada")
+            b.innerText = "Resposta Errada"
+            b.style.backgroundColor = "red"
+        }
+
+        function fo() {
+            var b = window.document.getElementById ("eda")
+            b.innerText = "Resposta Errada"
+            b.style.backgroundColor = "red"
+        }
+
+        function fu() {
+            var b = window.document.getElementById ("idi")
+            b.innerText = "Resposta Errada"
+            b.style.backgroundColor = "red"
+        }
+    </script>
+</body>
+</html>

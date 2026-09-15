@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let nota = window.prompt ("Digite a sua nota:")
+        nota = parseFloat (nota);
+        if (nota >= 0 && nota <= 4.9) {
+            window.alert ("Reprovado");
+        }
+        
+        else if (nota >= 5 && nota <= 6.9) {
+            window.alert ("Recuperação");
+        }
+
+        else if (nota >=7 && nota <= 10) {
+            window.alert ("Aprovado")
+        }
+        
+        else {
+            window.alert ("Nota Inválida")
+        }
+    </script>
+</body>
+</html>

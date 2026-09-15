@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let numero = parseInt(prompt("Digite um número de 1 a 7:"));
+
+        switch (numero) {
+            case 1:
+                day = "Domingo";
+                break;
+            case 2:
+                day = "Segunda";
+                break;
+            case 3:
+                day = "Terça";
+                break;
+            case 4:
+                day = "Quarta";
+                break;
+            case 5:
+                day = "Quinta";
+                break;
+            case 6:
+                day = "Sexta";
+                break;
+            case 7:
+                day = "Sabado";
+                break;
+            default:
+                alert("Dia inválido.");
+        }
+        window.alert(day)
+    </script>
+</body>
+</html>
