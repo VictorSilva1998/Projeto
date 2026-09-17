@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        document.write (/[abc]/.test ("eee"), "<br>");
+
+        document.write (/^\d{2}$/.test("12"),"<br>");
+        document.write (/\d{2}\s\./.test("12 ."),"<br>");
+        document.write (/^\d*$/.test("12345"),"<br>");
+        document.write (/^\d*$/.test("7"),"<br>");
+        document.write (/^\d*$/.test(""),"<br>");
+        document.write (/^\d*$/.test("12A"),"<br>");
+
+        document.write (/^[A-Z]$/i.test("ASD"))
+        document.write (/^[A-Z]$/i.test("A"),"<br>")
+
+        var dia = /^(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/;
+        document.write (dia.test("32"),"<br>"); 
+        document.write (dia.test("31"),"<br>");
+
+        var mes = /^(0[1-9]|1[0-2])$/;
+        document.write (mes.test("12"),"<br>");
+        document.write (mes.test("13"),"<br>");
+
+        var ano = /^\d{4}$/;
+        document.write (ano.test("24"),"<br>")
+        document.write (ano.test("2024"),"<br>")
+    </script>
+</body>
+</html>
