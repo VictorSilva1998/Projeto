@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
 )
 
 ESTILO_MENU = """
-
     QWidget {
         font-family: Arial;
         font-size: 16px;
