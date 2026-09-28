@@ -1,9 +1,6 @@
-import sys
-
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QKeySequence, QShortcut
-from PySide6.QtWidgets import ( QLabel, QPushButton, QVBoxLayout, QWidget,
-)
+from PySide6.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QWidget)
 
 from tela_de_voto import UrnaEletronica
 from tela_zeresima import TelaZeresima
@@ -177,7 +174,6 @@ class TelaMenu(QWidget):
 
     def habilitar_votacao(self):
         self.botao_votar.setEnabled(True)
-
 
     def abrir_zeresima(self):
 
