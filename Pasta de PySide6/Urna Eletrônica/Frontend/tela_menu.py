@@ -1,9 +1,11 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QKeySequence, QShortcut
-from PySide6.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QWidget)
-
-from tela_de_voto import UrnaEletronica
-from tela_zeresima import TelaZeresima
+from PySide6.QtWidgets import ( 
+    QLabel, 
+    QPushButton, 
+    QVBoxLayout, 
+    QWidget
+)
 
 ESTILO_MENU = """
 
@@ -56,10 +58,11 @@ ESTILO_MENU = """
         color: #808080;
         border: 1px solid #b0b0b0;
     }
+
 """
 
 class TelaMenu(QWidget):
-
+    
     relatorio_inicial_clicado = Signal()
     votar_clicado = Signal()
     relatorio_final_clicado = Signal()
@@ -70,15 +73,12 @@ class TelaMenu(QWidget):
 
         self.setObjectName("tela_menu")
         self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setStyleSheet(ESTILO_MENU)
 
         self._atalhos = []
 
         self._criar_widgets()
         self._criar_atalhos()
-
-        self.relatorio_inicial_clicado.connect(
-            self.abrir_zeresima
-        )
 
     def _criar_widgets(self):
 
@@ -99,18 +99,23 @@ class TelaMenu(QWidget):
         layout.addWidget(subtitulo)
         layout.addSpacing(45)
 
-        layout.addWidget(self._criar_botao(
+        self.botao_zeresima = (self._criar_botao(
             "1", "Relatório Inicial (Zerésima)", self.relatorio_inicial_clicado
         ))
+
+
+        self.botao_zeresima.clicked.connect(self.habilitar_votar)
+        layout.addWidget(self.botao_zeresima)
+        
         layout.addSpacing(14)
 
-        self.botao_votar = self._criar_botao(
+        self.botao_votar = (self._criar_botao(
             "2", "Votar", self.votar_clicado
-        )
+        ))
 
         self.botao_votar.setEnabled(False)
-
         layout.addWidget(self.botao_votar)
+
         layout.addSpacing(14)
 
         layout.addWidget(self._criar_botao(
@@ -130,8 +135,6 @@ class TelaMenu(QWidget):
         layout.addWidget(rodape)
 
         self.setLayout(layout)
-
-        self.votar_clicado.connect(self.abrir_votacao)
 
     def _criar_botao(self, numero, texto, sinal):
 
@@ -160,27 +163,5 @@ class TelaMenu(QWidget):
 
             self._atalhos.append(atalho)
 
-    def abrir_votacao(self):
-
-        self.tela_da_urna = UrnaEletronica()
-
-        janela_principal = self.window()
-
-        self.tela_da_urna.fechada.connect(janela_principal.show)
-
-        self.tela_da_urna.show()
-
-        janela_principal.hide()
-
-    def habilitar_votacao(self):
+    def habilitar_votar(self):
         self.botao_votar.setEnabled(True)
-
-    def abrir_zeresima(self):
-
-        self.tela_zeresima = TelaZeresima()
-
-        self.tela_zeresima.zeresima_emitida.connect(
-            self.habilitar_votacao
-        )
-
-        self.tela_zeresima.exec()

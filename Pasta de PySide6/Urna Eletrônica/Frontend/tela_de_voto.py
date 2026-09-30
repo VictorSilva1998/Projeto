@@ -5,10 +5,10 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt, Signal
 
-from confirmar import confirmar
-from corrigir import corrigir
-from voto_branco import voto_branco
-from candidados import candidatos
+from Backend.confirmar import confirmar
+from Backend.corrigir import corrigir
+from Backend.voto_branco import voto_branco
+from Backend.candidatos import candidatos
 
 ESTILOS = """
 QWidget {
@@ -90,8 +90,6 @@ class UrnaEletronica(QWidget):
 
         self.setWindowTitle("Urna Eletrônica")
         self.setFixedSize(800, 500)
-
-            
         self.votos = {
             "01": 0,
             "02": 0,
@@ -101,6 +99,7 @@ class UrnaEletronica(QWidget):
         }
 
         self.numero_digitado = ""
+        self.tela_confirmacao = None
 
         self.criar_interface()
 
@@ -214,6 +213,7 @@ class UrnaEletronica(QWidget):
                     Qt.KeepAspectRatio
                 )
             )
+            
         else:
             self.nome_label.setText("VOTO NULO")
             self.partido_label.setText("")

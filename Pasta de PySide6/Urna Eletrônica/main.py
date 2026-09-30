@@ -1,35 +1,116 @@
-import sys
+import sys  
+  
+from PySide6.QtWidgets import (   
+    QApplication,  
+    QVBoxLayout,  
+    QStackedWidget,   
+    QWidget  
+)  
+from Frontend.tela_menu import TelaMenu  
+from Frontend.tela_zeresima import TelaZeresima  
+from Frontend.tela_boletim_urna import TelaBoletimUrna 
+from Frontend.tela_informar_titulo import TelaTituloEleitor 
+from Backend.eleitor import eleitores
+from Frontend.tela_de_voto import UrnaEletronica
+# from Frontend.tela_eleitoral import TelaEleitoral  
+  
+class JanelaPrincipal(QWidget):  
+  
+    def __init__(self):  
+        super().__init__()  
+  
+        self.setWindowTitle("Urna Eletrônica - Simulação")  
+        self.resize(800, 500)  
+  
+        self.menu = TelaMenu()  
+        self.zeresima = TelaZeresima()  
+        self.boletim_urna = TelaBoletimUrna() 
+        self.informar_titulo = TelaTituloEleitor(eleitores)
+        self.tela_urna = UrnaEletronica()
+        #self.votar = TelaEleitoral()  
+  
+        self.stack = QStackedWidget()  
+        self.stack.addWidget(self.menu)  
+        self.stack.addWidget(self.zeresima) 
+        self.stack.addWidget(self.boletim_urna) 
+        self.stack.addWidget(self.informar_titulo) 
+        self.stack.addWidget(self.tela_urna)
+        #self.stack.addWidget(self.votar)  
+  
+        layout = QVBoxLayout()  
+        layout.setContentsMargins(0, 0, 0, 0)  
+        layout.addWidget(self.stack)  
+        self.setLayout(layout)  
+  
+        self._conectar_sinais()  
+  
+    def _conectar_sinais(self):  
+        self.menu.relatorio_inicial_clicado.connect( 
+            self.ir_para_zeresima 
+        ) #Troca pra tela da zerésima 
+ 
+        self.menu.votar_clicado.connect( 
+            self.ir_para_informar_titulo 
+        ) #Troca pra tela de informar título 
+ 
+        self.menu.relatorio_final_clicado.connect( 
+            self.ir_para_boletim_urna 
+        ) #Troca pra tela do relatório final 
+ 
+        self.menu.sair_clicado.connect( 
+            self.sair 
+        ) #Sai do sistema 
+ 
+        self.zeresima.zeresima_confirmada.connect( 
+            self.confirmar_zeresima 
+        ) #Volta para a tela de menu 
+ 
+        self.boletim_urna.boletim_confirmado.connect( 
+            self.confirmar_boletim 
+        ) #Volta para a tela de menu
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QKeySequence, QShortcut
-from PySide6.QtWidgets import ( QApplication, QLabel, QPushButton, QVBoxLayout, QWidget,
-)
+        self.informar_titulo.cancelar_clicado.connect(
+            self.confirmar_informar_titulo
+        ) #Volta para a tela de menu
 
-from tela_menu import TelaMenu, ESTILO_MENU
+        self.informar_titulo.titulo_validado.connect(
+            self.abrir_urna
+        )
+  
+    def ir_para_zeresima(self):  
+        self.stack.setCurrentWidget(self.zeresima) 
+ 
+    def ir_para_informar_titulo(self): 
+        self.stack.setCurrentWidget(self.informar_titulo) 
+ 
+    def ir_para_boletim_urna(self): 
+        self.stack.setCurrentWidget(self.boletim_urna) 
+ 
+    def confirmar_zeresima(self):  
+        self.stack.setCurrentWidget(self.menu) 
+ 
+    def confirmar_boletim(self): 
+        self.stack.setCurrentWidget(self.menu)
 
-class JanelaPrincipal(QWidget):
+    def confirmar_informar_titulo(self):
+        self.stack.setCurrentWidget(self.menu)
+  
+    def sair(self):  
+        self.close()  
 
-    def __init__(self):
-        super().__init__()
+    def abrir_urna(self, titulo):
+        self.titulo_atual = titulo
 
-        self.setWindowTitle("Urna Eletrônica - Simulação")
-        self.resize(800, 500)
+        print(f"Título validado: {titulo}")
+        print(f"Eleitor: {eleitores[titulo]['nome']}")
 
-        self.menu = TelaMenu()
-
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.menu)
-        self.setLayout(layout)
-
-        self.setStyleSheet(ESTILO_MENU)
-
-def main():
-
-    app = QApplication(sys.argv)
-    janela = JanelaPrincipal()
-    janela.show()
-    sys.exit(app.exec())
-
-if __name__ == "__main__":
+        self.stack.setCurrentWidget(self.tela_urna)
+  
+def main():  
+    app = QApplication(sys.argv)  
+    janela = JanelaPrincipal()  
+    janela.show()  
+    sys.exit(app.exec())  
+  
+if __name__ == "__main__":  
     main()

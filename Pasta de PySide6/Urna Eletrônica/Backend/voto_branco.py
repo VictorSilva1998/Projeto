@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QMessageBox
-from corrigir import corrigir
+from Backend.corrigir import corrigir
 
 def voto_branco(urna):
     urna.votos["branco"] += 1
