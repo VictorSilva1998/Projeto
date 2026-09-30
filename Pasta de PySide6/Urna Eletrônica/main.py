@@ -13,6 +13,7 @@ from Frontend.tela_boletim_urna import TelaBoletimUrna
 from Frontend.tela_informar_titulo import TelaTituloEleitor
 from Backend.eleitor import eleitores
 from Frontend.tela_de_voto import UrnaEletronica
+from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
 
 class JanelaPrincipal(QWidget):
 
@@ -26,6 +27,7 @@ class JanelaPrincipal(QWidget):
         self.zeresima = TelaZeresima()
         self.boletim_urna = TelaBoletimUrna()
         self.informar_titulo = TelaTituloEleitor(eleitores)
+        self.tela_confirmacao = TelaConfirmacaoCandidato()
 
         # A urna só será criada depois que o título for validado
         self.tela_urna = None
@@ -37,6 +39,7 @@ class JanelaPrincipal(QWidget):
         self.stack.addWidget(self.zeresima)
         self.stack.addWidget(self.boletim_urna)
         self.stack.addWidget(self.informar_titulo)
+        self.stack.addWidget(self.tela_confirmacao)
 
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -80,6 +83,10 @@ class JanelaPrincipal(QWidget):
             self.abrir_urna
         )
 
+        self.tela_confirmacao.voltar_menu_clicado.connect(
+            self.voltar_para_menu
+        )
+
     def ir_para_zeresima(self):
         self.stack.setCurrentWidget(self.zeresima)
 
@@ -110,6 +117,10 @@ class JanelaPrincipal(QWidget):
 
         self.tela_urna = UrnaEletronica(titulo)
 
+        self.tela_urna.candidato_selecionado.connect(
+            self.mostrar_confirmacao
+        )
+
         self.tela_urna.votacao_finalizada.connect(
             self.finalizar_votacao
         )
@@ -119,8 +130,6 @@ class JanelaPrincipal(QWidget):
 
     def finalizar_votacao(self):
 
-        self.stack.setCurrentWidget(self.informar_titulo)
-
         if self.tela_urna is not None:
             self.stack.removeWidget(self.tela_urna)
             self.tela_urna.close()
@@ -128,8 +137,29 @@ class JanelaPrincipal(QWidget):
             self.tela_urna = None
 
         self.titulo_atual = None
-
         self.informar_titulo.input_titulo.clear()
+
+        self.stack.setCurrentWidget(self.menu)
+
+    def voltar_para_menu(self):
+        print("Recebi o sinal de voltar")
+        print("Menu:", self.menu)
+        print("Atual:", self.stack.currentWidget())
+
+        self.stack.setCurrentWidget(self.menu)
+
+        print("Depois:", self.stack.currentWidget())
+
+    def mostrar_confirmacao(self, numero, candidato):
+
+        self.tela_confirmacao.exibir_candidato(
+            numero,
+            candidato
+        )
+
+        self.stack.setCurrentWidget(
+            self.tela_confirmacao
+        )
 
 def main():
     app = QApplication(sys.argv)

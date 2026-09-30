@@ -4,7 +4,6 @@ from Backend.candidatos import candidatos
 from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
 from Backend.eleitor import eleitores
 
-
 def confirmar(urna):
 
     numero = urna.numero_digitado
@@ -35,13 +34,6 @@ def confirmar(urna):
     # VOTO EM CANDIDATO
     candidato = candidatos[numero]
 
-    urna.tela_confirmacao = TelaConfirmacaoCandidato()
-
-    urna.tela_confirmacao.exibir_candidato(
-        numero,
-        candidato
-    )
-
     def confirmar_voto():
 
         urna.votos[numero] += 1
@@ -59,10 +51,10 @@ def confirmar(urna):
     def cancelar():
         urna.tela_confirmacao.close()
 
-    urna.tela_confirmacao.confirmar_clicado.connect(confirmar_voto)
-    urna.tela_confirmacao.cancelar_clicado.connect(cancelar)
+        urna.tela_confirmacao.confirmar_clicado.connect(confirmar_voto)
+        urna.tela_confirmacao.cancelar_clicado.connect(cancelar)
 
-    urna.tela_confirmacao.show()
+        urna.tela_confirmacao.show()
 
 
 def finalizar_votacao(urna):

@@ -87,6 +87,7 @@ QFrame#painel-esquerdo {
 class UrnaEletronica(QWidget):
 
     votacao_finalizada = Signal()
+    candidato_selecionado = Signal(str, dict)
     
     def __init__(self, titulo_eleitor):
         super().__init__()
