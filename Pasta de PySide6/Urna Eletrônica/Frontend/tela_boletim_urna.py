@@ -76,9 +76,7 @@ ESTILO_MENU = """
         background-color: #F8F8FF;
         border-color: #3d4a63;
     }
-
 """
-
 
 class TelaBoletimUrna(QWidget):
 

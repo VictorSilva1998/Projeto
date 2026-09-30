@@ -1,20 +1,21 @@
 from PySide6.QtWidgets import QMessageBox
-from Backend.corrigir import corrigir
+
 from Backend.candidatos import candidatos
-from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
 from Backend.eleitor import eleitores
 
 def confirmar(urna):
 
     numero = urna.numero_digitado
 
-    # VOTO EM BRANCO
+    # Nenhum número foi digitado
     if not numero:
+
         QMessageBox.warning(
             urna,
             "Atenção",
             "Digite um número ou escolha BRANCO."
         )
+
         return
 
     # VOTO NULO
@@ -29,37 +30,43 @@ def confirmar(urna):
         )
 
         finalizar_votacao(urna)
+
         return
 
     # VOTO EM CANDIDATO
     candidato = candidatos[numero]
 
-    def confirmar_voto():
+    urna.candidato_selecionado.emit(
+        numero,
+        candidato
+    )
 
-        urna.votos[numero] += 1
 
-        QMessageBox.information(
-            urna,
-            "Voto",
-            f"Voto confirmado para {candidato['nome']}!"
-        )
+def registrar_voto(urna, numero):
 
-        urna.tela_confirmacao.close()
+    if numero not in candidatos:
+        return False
 
-        finalizar_votacao(urna)
+    candidato = candidatos[numero]
 
-    def cancelar():
-        urna.tela_confirmacao.close()
+    urna.votos[numero] += 1
 
-        urna.tela_confirmacao.confirmar_clicado.connect(confirmar_voto)
-        urna.tela_confirmacao.cancelar_clicado.connect(cancelar)
+    QMessageBox.information(
+        urna,
+        "Voto",
+        f"Voto confirmado para {candidato['nome']}!"
+    )
 
-        urna.tela_confirmacao.show()
+    finalizar_votacao(urna)
+
+    return True
 
 
 def finalizar_votacao(urna):
 
-    eleitores[urna.titulo_eleitor]["votou"] = True
+    eleitores[
+        urna.titulo_eleitor
+    ]["votou"] = True
 
     print("Voto registrado com sucesso.")
 
