@@ -1,4 +1,3 @@
-import sys 
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, 
                                QLabel, QLineEdit, QPushButton, QFrame, QSpacerItem, QSizePolicy) 
 from PySide6.QtCore import Qt, Signal

@@ -1,4 +1,3 @@
-import sys
 import os
 from PySide6.QtCore import Qt, Signal, Slot
 from PySide6.QtGui import QKeySequence, QPixmap, QShortcut

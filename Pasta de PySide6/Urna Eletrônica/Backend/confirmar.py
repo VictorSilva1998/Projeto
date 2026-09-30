@@ -4,41 +4,47 @@ from Backend.candidatos import candidatos
 from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
 from Backend.eleitor import eleitores
 
+
 def confirmar(urna):
 
-    if urna.numero_digitado not in candidatos:
+    numero = urna.numero_digitado
 
-        if urna.numero_digitado:
-            urna.votos["nulo"] += 1
-
-            QMessageBox.information(
-                urna,
-                "Voto",
-                "Voto nulo!"
-            )
-
-            corrigir(urna)
-
-        else:
-            QMessageBox.warning(
-                urna,
-                "Atenção",
-                "Digite um número ou escolha BRANCO."
-            )
-
+    # VOTO EM BRANCO
+    if not numero:
+        QMessageBox.warning(
+            urna,
+            "Atenção",
+            "Digite um número ou escolha BRANCO."
+        )
         return
 
-    candidato = candidatos[urna.numero_digitado]
+    # VOTO NULO
+    if numero not in candidatos:
+
+        urna.votos["nulo"] += 1
+
+        QMessageBox.information(
+            urna,
+            "Voto",
+            "Voto nulo!"
+        )
+
+        finalizar_votacao(urna)
+        return
+
+    # VOTO EM CANDIDATO
+    candidato = candidatos[numero]
 
     urna.tela_confirmacao = TelaConfirmacaoCandidato()
 
     urna.tela_confirmacao.exibir_candidato(
-        urna.numero_digitado,
+        numero,
         candidato
     )
 
     def confirmar_voto():
-        urna.votos[urna.numero_digitado] += 1
+
+        urna.votos[numero] += 1
 
         QMessageBox.information(
             urna,
@@ -47,7 +53,8 @@ def confirmar(urna):
         )
 
         urna.tela_confirmacao.close()
-        corrigir(urna)
+
+        finalizar_votacao(urna)
 
     def cancelar():
         urna.tela_confirmacao.close()
@@ -57,7 +64,11 @@ def confirmar(urna):
 
     urna.tela_confirmacao.show()
 
-    def finalizar_votacao(self):
-        eleitores[self.titulo_atual]["votou"] = True
 
-        print("Voto registrado com sucesso.")
+def finalizar_votacao(urna):
+
+    eleitores[urna.titulo_eleitor]["votou"] = True
+
+    print("Voto registrado com sucesso.")
+
+    urna.votacao_finalizada.emit()
