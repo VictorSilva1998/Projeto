@@ -1,73 +1,17 @@
 from PySide6.QtWidgets import QMessageBox
 
-from Backend.candidatos import candidatos
-from Backend.eleitor import eleitores
 
 def confirmar(urna):
-
+    """Abre a etapa de confirmação; o backend só registra após aceite."""
     numero = urna.numero_digitado
-
-    # Nenhum número foi digitado
-    if not numero:
-
+    tamanho = urna.backend.obter_tamanho_codigo_candidato()
+    if len(numero) != tamanho:
         QMessageBox.warning(
             urna,
             "Atenção",
-            "Digite um número ou escolha BRANCO."
+            f"Digite o número completo de {tamanho} dígitos ou escolha BRANCO.",
         )
-
         return
 
-    # VOTO NULO
-    if numero not in candidatos:
-
-        urna.votos["nulo"] += 1
-
-        QMessageBox.information(
-            urna,
-            "Voto",
-            "Voto nulo!"
-        )
-
-        finalizar_votacao(urna)
-
-        return
-
-    # VOTO EM CANDIDATO
-    candidato = candidatos[numero]
-
-    urna.candidato_selecionado.emit(
-        numero,
-        candidato
-    )
-
-
-def registrar_voto(urna, numero):
-
-    if numero not in candidatos:
-        return False
-
-    candidato = candidatos[numero]
-
-    urna.votos[numero] += 1
-
-    QMessageBox.information(
-        urna,
-        "Voto",
-        f"Voto confirmado para {candidato['nome']}!"
-    )
-
-    finalizar_votacao(urna)
-
-    return True
-
-
-def finalizar_votacao(urna):
-
-    eleitores[
-        urna.titulo_eleitor
-    ]["votou"] = True
-
-    print("Voto registrado com sucesso.")
-
-    urna.votacao_finalizada.emit()
+    tipo = "candidato" if numero in urna.backend.candidatos else "nulo"
+    urna.voto_solicitado.emit(tipo, numero)

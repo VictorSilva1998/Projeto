@@ -1,265 +1,192 @@
 import sys
 
-from PySide6.QtWidgets import (
-    QApplication,
-    QVBoxLayout,
-    QStackedWidget,
-    QWidget
-)
+from PySide6.QtWidgets import QApplication, QMessageBox, QStackedWidget, QVBoxLayout, QWidget
 
+from Backend.som_confirmacao import tocar_som_confirmacao
+from Backend.urna_backend import UrnaBackend, urna_backend
+from Frontend.tela_boletim_urna import TelaBoletimUrna
+from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
+from Frontend.tela_de_voto import UrnaEletronica
+from Frontend.tela_informar_titulo import TelaTituloEleitor
 from Frontend.tela_menu import TelaMenu
 from Frontend.tela_zeresima import TelaZeresima
-from Frontend.tela_boletim_urna import TelaBoletimUrna
-from Frontend.tela_informar_titulo import TelaTituloEleitor
-from Frontend.tela_de_voto import UrnaEletronica
-from Frontend.tela_confirmacao_candidato import TelaConfirmacaoCandidato
-
 from Backend.eleitor import eleitores
-from Backend.confirmar import registrar_voto
 
 class JanelaPrincipal(QWidget):
-
-    def __init__(self):
+    def __init__(self, backend: UrnaBackend = urna_backend):
         super().__init__()
-
+        self.backend = backend
         self.setWindowTitle("Urna Eletrônica - Simulação")
-        self.resize(800,500)
+        self.resize(800, 500)
 
         self.menu = TelaMenu()
-        self.zeresima = TelaZeresima()
-        self.boletim_urna = TelaBoletimUrna()
+        self.zeresima = TelaZeresima(backend)
+        self.boletim_urna = TelaBoletimUrna(backend)
         self.informar_titulo = TelaTituloEleitor(eleitores)
-
-        self.confirmacao_candidato = (TelaConfirmacaoCandidato())
-
+        self.confirmacao = TelaConfirmacaoCandidato()
         self.tela_urna = None
         self.titulo_atual = None
-        self.numero_candidato_pendente = None
+        self.voto_pendente = None
 
         self.stack = QStackedWidget()
+        for tela in (self.menu, self.zeresima, self.boletim_urna, self.informar_titulo, self.confirmacao):
+            self.stack.addWidget(tela)
 
-        self.stack.addWidget(self.menu)
-        self.stack.addWidget(self.zeresima)
-        self.stack.addWidget(self.boletim_urna)
-        self.stack.addWidget(self.informar_titulo)
-        self.stack.addWidget(self.confirmacao_candidato)
-
-        layout = QVBoxLayout()
-
+        layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-
         layout.addWidget(self.stack)
 
-        self.setLayout(layout)
-
         self._conectar_sinais()
+        self._atualizar_menu()
+        self.stack.setCurrentWidget(self.menu)
 
     def _conectar_sinais(self):
+        self.menu.relatorio_inicial_clicado.connect(self.ir_para_zeresima)
+        self.menu.votar_clicado.connect(self.ir_para_informar_titulo)
+        self.menu.relatorio_final_clicado.connect(self.ir_para_boletim_urna)
+        self.menu.encerrar_votacao_clicado.connect(self.encerrar_eleicao)
+        self.menu.sair_clicado.connect(self.close)
 
-        self.menu.relatorio_inicial_clicado.connect(
-            self.ir_para_zeresima
-        )
+        self.zeresima.zeresima_confirmada.connect(self.confirmar_zeresima)
+        self.zeresima.zeresima_cancelada.connect(self.voltar_ao_menu)
+        self.boletim_urna.boletim_confirmado.connect(self.confirmar_boletim)
+        self.informar_titulo.cancelar_clicado.connect(self.voltar_ao_menu)
+        self.informar_titulo.titulo_validado.connect(self.abrir_urna)
+        self.confirmacao.confirmar_clicado.connect(self.confirmar_voto)
+        self.confirmacao.cancelar_clicado.connect(self.cancelar_confirmacao)
 
-        self.menu.votar_clicado.connect(
-            self.ir_para_informar_titulo
-        )
-
-        self.menu.relatorio_final_clicado.connect(
-            self.ir_para_boletim_urna
-        )
-
-        self.menu.sair_clicado.connect(
-            self.sair
-        )
-
-        self.zeresima.zeresima_confirmada.connect(
-            self.confirmar_zeresima
-        )
-
-        self.boletim_urna.boletim_confirmado.connect(
-            self.confirmar_boletim
-        )
-
-        self.informar_titulo.cancelar_clicado.connect(
-            self.confirmar_informar_titulo
-        )
-
-        self.informar_titulo.titulo_validado.connect(
-            self.abrir_urna
-        )
-
-        self.confirmacao_candidato.confirmar_clicado.connect(
-            self.confirmar_candidato
-        )
-
-        self.confirmacao_candidato.cancelar_clicado.connect(
-            self.cancelar_confirmacao
-        )
-
-        self.confirmacao_candidato.voltar_menu_clicado.connect(
-            self.voltar_para_menu
-        )
-
-    def voltar_para_menu(self):
-
-        if self.tela_urna is not None:
-
-            self.stack.removeWidget(self.tela_urna)
-
-            self.tela_urna.close()
-            self.tela_urna.deleteLater()
-
-            self.tela_urna = None
-
-        self.titulo_atual = None
-        self.numero_candidato_pendente = None
-
-        self.confirmacao_candidato.limpar()
-        self.informar_titulo.input_titulo.clear()
-
-        self.stack.setCurrentWidget(
-            self.menu
-        )
+    def _atualizar_menu(self):
+        eleicao_iniciada = self.backend.eleicao_iniciada and not self.backend.urna_fechada
+        self.menu.botao_zeresima.setEnabled(not self.backend.eleicao_iniciada)
+        self.menu.botao_votar.setEnabled(eleicao_iniciada)
+        self.menu.botao_encerrar.setEnabled(eleicao_iniciada)
+        self.menu.botao_relatorio_final.setEnabled(self.backend.urna_fechada)
 
     def ir_para_zeresima(self):
-
-        self.stack.setCurrentWidget(
-            self.zeresima
-        )
-
-    def ir_para_informar_titulo(self):
-
-        self.stack.setCurrentWidget(
-            self.informar_titulo
-        )
-
-    def ir_para_boletim_urna(self):
-
-        self.stack.setCurrentWidget(
-            self.boletim_urna
-        )
+        if self.backend.eleicao_iniciada:
+            return
+        self.zeresima.atualizar_dados()
+        self.stack.setCurrentWidget(self.zeresima)
 
     def confirmar_zeresima(self):
+        ok, mensagem = self.backend.iniciar_eleicao()
+        if not ok:
+            QMessageBox.warning(self, "Zerésima", mensagem)
+            return
+        self._atualizar_menu()
+        self.stack.setCurrentWidget(self.menu)
 
-        self.stack.setCurrentWidget(
-            self.menu
-        )
-
-    def confirmar_boletim(self):
-
-        self.stack.setCurrentWidget(
-            self.menu
-        )
-
-    def confirmar_informar_titulo(self):
-
-        self.stack.setCurrentWidget(
-            self.menu
-        )
-
-    def sair(self):
-
-        self.close()
+    def ir_para_informar_titulo(self):
+        if not self.backend.eleicao_iniciada or self.backend.urna_fechada:
+            QMessageBox.warning(self, "Votação indisponível", "A votação não está aberta.")
+            self._atualizar_menu()
+            return
+        self.stack.setCurrentWidget(self.informar_titulo)
 
     def abrir_urna(self, titulo):
-
-        self.titulo_atual = titulo
-
-        self.tela_urna = UrnaEletronica(
-            titulo
-        )
-
-        self.tela_urna.candidato_selecionado.connect(
-            self.exibir_confirmacao_candidato
-        )
-
-        self.tela_urna.votacao_finalizada.connect(
-            self.finalizar_votacao
-        )
-
-        self.stack.addWidget(
-            self.tela_urna
-        )
-
-        self.stack.setCurrentWidget(
-            self.tela_urna
-        )
-
-    def exibir_confirmacao_candidato(
-        self,
-        numero,
-        candidato
-    ):
-
-        self.numero_candidato_pendente = numero
-
-        self.confirmacao_candidato.exibir_candidato(
-            numero,
-            candidato
-        )
-
-        self.stack.setCurrentWidget(
-            self.confirmacao_candidato
-        )
-
-    def confirmar_candidato(self):
-
-        if self.tela_urna is None:
+        ok, mensagem = self.backend.validar_eleitor_para_votar(titulo)
+        if not ok:
+            QMessageBox.warning(self, "Voto não permitido", mensagem)
             return
 
-        if self.numero_candidato_pendente is None:
+        self.titulo_atual = self.backend.normalizar_titulo(titulo)
+        self.tela_urna = UrnaEletronica(self.titulo_atual, self.backend)
+        self.tela_urna.voto_solicitado.connect(self.solicitar_confirmacao_voto)
+        self.stack.addWidget(self.tela_urna)
+        self.stack.setCurrentWidget(self.tela_urna)
+
+    def solicitar_confirmacao_voto(self, tipo, numero):
+        if self.titulo_atual is None:
+            return
+        ok, mensagem = self.backend.validar_eleitor_para_votar(self.titulo_atual)
+        if not ok:
+            QMessageBox.warning(self, "Voto não permitido", mensagem)
+            self._finalizar_votacao()
             return
 
-        numero = self.numero_candidato_pendente
+        candidato = self.backend.candidatos.get(numero) if tipo == "candidato" else None
+        self.voto_pendente = (tipo, numero)
+        self.confirmacao.configurar_voto(tipo, numero, candidato)
+        self.stack.setCurrentWidget(self.confirmacao)
 
-        registrar_voto(
-            self.tela_urna,
-            numero
-        )
+    def confirmar_voto(self):
+        if self.titulo_atual is None or self.voto_pendente is None:
+            return
+        tipo, numero = self.voto_pendente
+        ok, mensagem = self.backend.registrar_voto(self.titulo_atual, tipo, numero)
+        if not ok:
+            QMessageBox.warning(self, "Voto não registrado", mensagem)
+            self.voto_pendente = None
+            self._finalizar_votacao()
+            return
+
+        tocar_som_confirmacao()
+        if tipo == "candidato":
+            nome_voto = self.backend.candidatos[numero]["nome"]
+        elif tipo == "branco":
+            nome_voto = "em branco"
+        else:
+            nome_voto = "nulo"
+        QMessageBox.information(self, "Voto confirmado", f"Voto {nome_voto} registrado.")
+        self.voto_pendente = None
+        self._finalizar_votacao()
 
     def cancelar_confirmacao(self):
-
-        self.numero_candidato_pendente = None
-        
-        self.confirmacao_candidato.limpar()
-
+        self.voto_pendente = None
         if self.tela_urna is not None:
+            self.stack.setCurrentWidget(self.tela_urna)
 
-            self.tela_urna.limpar_voto()
-
-            self.stack.setCurrentWidget(
-                self.tela_urna
-            )
-
-        else:
-
-            self.stack.setCurrentWidget(
-                self.menu
-            )
-
-    def finalizar_votacao(self):
-
+    def _finalizar_votacao(self):
+        self.stack.setCurrentWidget(self.informar_titulo)
         if self.tela_urna is not None:
-
-            self.stack.removeWidget(
-                self.tela_urna
-            )
-
-            self.tela_urna.close()
+            self.stack.removeWidget(self.tela_urna)
             self.tela_urna.deleteLater()
-
             self.tela_urna = None
-
         self.titulo_atual = None
-        self.numero_candidato_pendente = None
-        self.confirmacao_candidato.limpar()
-        self.informar_titulo.input_titulo.clear()
-        self.stack.setCurrentWidget(
-            self.informar_titulo
-        )
+        self.informar_titulo.limpar()
+
+    def voltar_ao_menu(self):
+        self.stack.setCurrentWidget(self.menu)
+
+    def encerrar_eleicao(self):
+        if not self.backend.eleicao_iniciada or self.backend.urna_fechada:
+            self._atualizar_menu()
+            return
+
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Encerrar votação")
+        msg.setText("Deseja encerrar a eleição? Não será mais possível registrar votos.")
+
+        botao_sim = msg.addButton("Sim", QMessageBox.YesRole)
+        botao_nao = msg.addButton("Não", QMessageBox.NoRole)
+
+        msg.setDefaultButton(botao_nao)
+        msg.exec()
+
+        if msg.clickedButton() != botao_sim:
+            return
+
+        ok, mensagem = self.backend.encerrar_eleicao()
+
+        if not ok:
+            QMessageBox.warning(self, "Encerrar votação", mensagem)
+            return
+
+        self._atualizar_menu()
+        QMessageBox.information(self, "Votação encerrada", mensagem)
+
+    def ir_para_boletim_urna(self):
+        if not self.backend.urna_fechada:
+            QMessageBox.warning(self, "Boletim indisponível", "Encerre a eleição antes de abrir o boletim final.")
+            self._atualizar_menu()
+            return
+        self.boletim_urna.atualizar_dados()
+        self.stack.setCurrentWidget(self.boletim_urna)
+
+    def confirmar_boletim(self):
+        self.stack.setCurrentWidget(self.menu)
 
 def main():
-
     app = QApplication(sys.argv)
     janela = JanelaPrincipal()
     janela.show()
